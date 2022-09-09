@@ -5,10 +5,67 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
+  
   <title>Note App</title>
 </head>
 <body>
   <h1>Hello from Note App</h1>
+  <table id="notes">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Created</th>
+        <th>Category</th>
+        <th>Content</th>
+        <th>Dates</th>
+        <th>Edit</th>
+        <th>Archive</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+    <tfoot></tfoot>
+  </table>
+  <br>
+  <button id="create-note-button">Create Note</button>
+  <br><br>
+  
+  <form id="create-note-from">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" autocomplete="off">
+    <br><br>
+
+    <label for="category">Category</label>
+    <select name="category" id="category">
+      
+    </select>
+    <br><br>
+
+    <label for="content">Content</label>
+    <input type="text" id="content" name="content" autocomplete="off">
+    <br><br>
+
+    <button type="button">Create</button>
+    <br><br>
+
+  </form>
+  
+  <table id="stats">
+    <thead>
+      <tr>
+        <th>Note Category</th>
+        <th>Active</th>
+        <th>Archived</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+  </table>
+
+  <script type="module" src="./browser.js"></script>
+  <!-- <script type="module" src="./Note.js"></script> -->
   
 </body>
 </html>
