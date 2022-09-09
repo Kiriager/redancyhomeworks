@@ -1,48 +1,32 @@
-import Note from "./Note.js"
-
-/* Database information simulation */
-
-let db = [
-  new Note({name: "buy books", created: new Date(), category: "Task",
-      content: "buy some books", archived: false}),
-  new Note({name: "buy more books", created: new Date(), category: "Idea", 
-      content: "buy some more books", archived: false}),
-  new Note({name: "sell books", created: new Date(), category: "Random Thought",
-      content: "sell some books", archived: true}),
-  new Note({name: "read books", created: new Date(), category: "Task",
-      content: "read some books", archived: false})
-]
-
-let categories = ["Task", "Idea", "Random Thought"]
-
 /* Build notes' table functions*/
+
 function createNotesTableHTML(notes, archiveStatus) {
   let tableHTML = ""
-  notes.forEach(note => {
+  notes.forEach((note, index) => {
     if (archiveStatus == note.data.archived) {
-      tableHTML += createNoteHTML(note)
+      tableHTML += createNoteHTML(note, index)
     }
   })
   return tableHTML
 }
 
-function createNoteHTML(note) {
+function createNoteHTML(note, id) {
   return `
-  <tr>
+  <tr id="note${id}">
     <td>${note.data.name}</td>
-    <td>${note.data.created}</td>
+    <td>${note.data.createDate}</td>
     <td>${note.data.category}</td>
     <td>${note.data.content}</td>
     <td>${getDates(note)}</td>
-    <td>icon</td>
-    <td>icon</td>
-    <td>icon</td>
+    <td><button class="edit-note-button">Edit Icon</button></td>
+    <td><button class="archive-note-button">Archive Icon</button></td>
+    <td><button class="delete-note-button">Delete Icon</button></td>
   </tr>
   `
 }
 
 function getDates(note) {
-  return note.data.created
+  return note.data.createDate
 }
 
 /* Build statistics table functions */
@@ -83,8 +67,8 @@ function createCategoriesTableHTML(notes, categories) {
 
 function createCategoriesSelectHTML(categories) {
   let optionsHTML = ""
-  categories.forEach((category, index) => {
-    optionsHTML += `<option value="${index}">${category}</option>`
+  categories.forEach((category) => {
+    optionsHTML += `<option value="${category}">${category}</option>`
   })
   return optionsHTML
 }
@@ -92,11 +76,19 @@ function createCategoriesSelectHTML(categories) {
 
 /* Add HTML to template */
 
-function init() {
-  document.getElementById("notes").getElementsByTagName("tbody")[0].innerHTML = createNotesTableHTML(db, false)
-  document.getElementById("stats").getElementsByTagName("tbody")[0].innerHTML = createCategoriesTableHTML(db, categories)
+export function init(notesList, categories) {
+  refreshNotesTable(notesList, false)
+  refreshStatsTable(notesList, categories)
   document.getElementById("category").innerHTML = createCategoriesSelectHTML(categories)
 }
 
-init()
+export function refreshStatsTable(notesList, categories) {
+  document.getElementById("stats-body").innerHTML = createCategoriesTableHTML(notesList, categories)
+}
+
+export function refreshNotesTable(notesList, archived) {
+  document.getElementById("notes-body").innerHTML = createNotesTableHTML(notesList, archived)
+}
+
+//init()
 

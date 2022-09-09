@@ -23,7 +23,7 @@
         <th>Delete</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="notes-body">
       
     </tbody>
     <tfoot></tfoot>
@@ -32,7 +32,7 @@
   <button id="create-note-button">Create Note</button>
   <br><br>
   
-  <form id="create-note-from">
+  <form id="create-note-form" hidden>
     <label for="name">Name</label>
     <input type="text" id="name" name="name" autocomplete="off">
     <br><br>
@@ -47,7 +47,8 @@
     <input type="text" id="content" name="content" autocomplete="off">
     <br><br>
 
-    <button type="button">Create</button>
+    <button type="button" id="submit-note-form">Create</button>
+    <button type="button" id="discard-note-form">Discard</button>
     <br><br>
 
   </form>
@@ -60,12 +61,10 @@
         <th>Archived</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="stats-body"></tbody>
     <tfoot></tfoot>
   </table>
 
-  <script type="module" src="./browser.js"></script>
-  <!-- <script type="module" src="./Note.js"></script> -->
-  
+  <script type="module" src="./main.js"></script>  
 </body>
 </html>
