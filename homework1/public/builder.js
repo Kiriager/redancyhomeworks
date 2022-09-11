@@ -76,7 +76,7 @@ function createCategoriesSelectHTML(categories) {
 
 /* Add HTML to template */
 
-export function init(notesList, categories) {
+export function initTables(notesList, categories) {
   refreshNotesTable(notesList, false)
   refreshStatsTable(notesList, categories)
   document.getElementById("category").innerHTML = createCategoriesSelectHTML(categories)
@@ -89,6 +89,4 @@ export function refreshStatsTable(notesList, categories) {
 export function refreshNotesTable(notesList, archived) {
   document.getElementById("notes-body").innerHTML = createNotesTableHTML(notesList, archived)
 }
-
-//init()
 

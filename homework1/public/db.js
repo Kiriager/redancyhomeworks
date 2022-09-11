@@ -1,6 +1,6 @@
 import Note from "./Note.js"
 
-export let categories = ["Task", "Idea", "Random Thought"]
+export const categories = ["Task", "Idea", "Random Thought"]
 
 export let notesList = [
   new Note({name: "buy books", createDate: new Date(), category: "Task",
@@ -13,5 +13,9 @@ export let notesList = [
       content: "read some books", archived: false})
 ]
 
-
+export let db = {
+    categories: categories,
+    notes: notesList,
+    editNoteId: -1
+}
 

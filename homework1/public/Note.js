@@ -15,13 +15,17 @@ Note.prototype.cleanUp = function() {
   if (typeof(this.data.category) != "string") {
     this.data.category = ""
   }
+  if (!this.data.createDate) {
+    this.createDate = new Date()
+  }
 
   this.data = {
     name: this.data.name.trim(),
-    createDate: new Date(),
+    createDate: this.createDate,
     category: this.data.category.trim(),
     content: this.data.content.trim(),
-    archived: false
+    archived: false,
+    editStatus: false
   }
   //console.log(this.data);
 }
@@ -46,6 +50,20 @@ Note.prototype.create = function() {
   this.validate()
 }
 
-Note.prototype.edit = function() {}
+Note.prototype.update = function(data) {
+  let updatedNote = new Note(data)
+  updatedNote.create()
+  if (!updatedNote.errors.length) {
+    this.data.name = updatedNote.data.name
+    this.data.category = updatedNote.data.category
+    this.data.content = updatedNote.data.content
+  } else {
+    this.errors = updatedNote.errors
+  }
+}
+
+Note.prototype.setArchivedStatus = function(status) {
+  this.data.archived = status
+}
 
 export default Note
