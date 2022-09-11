@@ -1,41 +1,31 @@
-import controller from "./controller.js"
+import noteController from "./noteController.js"
 
-controller.initTables()
-
-document.getElementById("create-note-button").addEventListener("click", controller.showCreateForm)
-document.getElementById("swap-table-status").addEventListener("click", controller.swapTableArchiveStatus)
+noteController.initTables()
 
 document.addEventListener("click", function (e) {
-  // if (e.target.id == "swap-table-status") {
-  //   controller.swapTableArchiveStatus()
-  // }
-
-  if (e.target.id == "swap-table-status") {
-    controller.swapTableArchiveStatus()
+  if (e.target.id == "create-note-button") {
+    noteController.showCreateForm()
   }
-
   if (e.target.id == "discard-note-form") {
-    controller.discardNoteForm()
+    noteController.discardNoteForm()
   }
-
+  if (e.target.id == "swap-table-status") {
+    noteController.switchArchiveStatus()
+  }
   if (e.target.classList.contains("add-note")) { 
-    controller.createNote(getFormData())
+    noteController.createNote(getFormData())
   }
-
-  if (e.target.classList.contains("delete-note-button")) { 
-    controller.deleteNote(e.target.parentElement.parentElement.id.match(/(\d+)/)[0])
-  }
-  
-  if (e.target.classList.contains("archive-note-button")) {
-    controller.switchNoteArchived(e.target.parentElement.parentElement.id.match(/(\d+)/)[0])
-  }
-  
-  if (e.target.classList.contains("edit-note-button")) { 
-    controller.initEditSession(e.target.parentElement.parentElement.id.match(/(\d+)/)[0])
-  }
-
   if (e.target.classList.contains("update-note")) { 
-    controller.updateNote(getFormData())
+    noteController.updateNote(getFormData())
+  }
+  if (e.target.classList.contains("delete-note-button")) { 
+    noteController.deleteNote(e.target.parentElement.parentElement.id.match(/(\d+)/)[0])
+  }
+  if (e.target.classList.contains("archive-note-button")) {
+    noteController.switchNoteArchived(e.target.parentElement.parentElement.id.match(/(\d+)/)[0])
+  }
+  if (e.target.classList.contains("edit-note-button")) { 
+    noteController.initEditSession(e.target.parentElement.parentElement.id.match(/(\d+)/)[0])
   }
 })
 

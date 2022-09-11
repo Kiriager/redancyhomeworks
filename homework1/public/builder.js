@@ -73,24 +73,57 @@ function createCategoriesSelectHTML(categories) {
   return optionsHTML
 }
 
+let builder = {}
 
-/* Add HTML to template */
-
-// export function initTables(notesList, categories) {
-//   refreshNotesTable(notesList, false)
-//   refreshStatsTable(notesList, categories)
-//   document.getElementById("category").innerHTML = createCategoriesSelectHTML(categories)
-// }
-
-export function refreshStatsTable(notesList, categories) {
+builder.refreshStatsTable = function (notesList, categories) {
   document.getElementById("stats-body").innerHTML = createCategoriesTableHTML(notesList, categories)
 }
 
-export function refreshNotesTable(notesList, archived) {
+builder.refreshNotesTable = function (notesList, archived) {
   document.getElementById("notes-body").innerHTML = createNotesTableHTML(notesList, archived)
 }
 
-export function createCategorySelect(categories) {
+builder.createCategorySelect = function (categories) {
   document.getElementById("category").innerHTML = createCategoriesSelectHTML(categories)  
 }
 
+builder.viewCreateForm = function() {
+  document.getElementById("create-note-button").hidden = true
+  document.getElementById("note-form").hidden = false
+  document.getElementById("submit-note-form").classList = "add-note"
+}
+
+builder.viewEditForm = function(note) {
+  document.getElementById("name").value = note.data.name
+  document.getElementById("category").value = note.data.category
+  document.getElementById("content").value = note.data.content
+  
+  document.getElementById("note-form").hidden = false
+  document.getElementById("create-note-button").hidden = true
+  document.getElementById("submit-note-form").classList = "update-note"
+}
+
+builder.hideNoteForm = function() {
+  document.getElementById("note-form").reset()
+  document.getElementById("note-form").hidden = true
+  document.getElementById("create-note-button").hidden = false
+}
+
+builder.hideNote = function(id) {
+  document.getElementById(`note${id}`).hidden = true
+}
+
+builder.viewNote = function(id) {
+  document.getElementById(`note${id}`).hidden = false
+}
+
+builder.switchArchiveElements = function(status) {
+  document.getElementById("create-note-button").hidden = status
+  if (status) {
+    document.getElementById("swap-table-status").innerHTML = "Show Active Notes"
+  } else {
+    document.getElementById("swap-table-status").innerHTML = "Show Archive Notes"
+  }
+}
+
+export default builder

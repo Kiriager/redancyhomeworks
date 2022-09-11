@@ -88,24 +88,8 @@ Note.getCategories = function() {
   return db.categories
 }
 
-Note.getSessionData = function() {
-  return db.sessionData
-}
-
 Note.delete = function(id) {
   db.notes.splice(id, 1)
-}
-
-Note.interruptEditNote = function() {
-  db.sessionData.editNoteId = -1
-}
-
-Note.setEditSession = function(id) {
-  db.sessionData.editNoteId = id
-}
-
-Note.swapArchiveTableStatus = function() {
-  db.sessionData.archiveTableStatus = !db.sessionData.archiveTableStatus
 }
 
 Note.initiateNotesData = function() {
