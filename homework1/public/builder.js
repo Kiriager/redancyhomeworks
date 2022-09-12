@@ -19,7 +19,7 @@ function createNoteHTML(note, id) {
     <td>${note.data.content}</td>
     <td>${getDatesList(note.getDates())}</td>
     <td><button class="edit-note-button" title="Edit Note"><i class="fa-solid fa-pen-to-square"></i></button></td>
-    <td><button class="archive-note-button" title="Archive Note"><i class="fa-solid fa-box-archive"></i></button></td>
+    <td><button class="archive-note-button" title="Archive/Unarchive Note"><i class="fa-solid fa-box-archive"></i></button></td>
     <td><button class="delete-note-button" title="Delete Note"><i class="fa-solid fa-trash"></i></button></td>
   </tr>
   `
@@ -119,7 +119,7 @@ builder.switchArchiveElements = function(status) {
   if (status) {
     document.getElementById("swap-table-status").innerHTML = "Show Active Notes"
   } else {
-    document.getElementById("swap-table-status").innerHTML = "Show Archive Notes"
+    document.getElementById("swap-table-status").innerHTML = "Show Archived Notes"
   }
 }
 
