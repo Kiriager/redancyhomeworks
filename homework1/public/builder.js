@@ -14,7 +14,7 @@ function createNoteHTML(note, id) {
   return `
   <tr id="note${id}">
     <td>${note.data.name}</td>
-    <td>${note.data.createDate}</td>
+    <td>${getFormateDate(note.data.createDate)}</td>
     <td>${note.data.category}</td>
     <td>${note.data.content}</td>
     <td>${getDates(note)}</td>
@@ -23,6 +23,10 @@ function createNoteHTML(note, id) {
     <td><button class="delete-note-button"><i class="fa-solid fa-trash"></i></button></td>
   </tr>
   `
+}
+
+function getFormateDate(date) {
+  return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
 }
 
 function getDates(note) {
