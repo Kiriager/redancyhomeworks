@@ -70,13 +70,7 @@ function createCategoriesTableHTML(notes, categories) {
 
 /* Build categories select*/
 
-function createCategoriesSelectHTML(categories) {
-  let optionsHTML = ""
-  categories.forEach((category) => {
-    optionsHTML += `<option value="${category}">${category}</option>`
-  })
-  return optionsHTML
-}
+
 
 let builder = {}
 
@@ -94,12 +88,12 @@ builder.createCategorySelect = function (categories) {
 
 builder.viewCreateForm = function() {
   document.getElementById("create-note-button").hidden = true
-  document.getElementById("new-note").innerHTML = this.createFormRowHTML()
+  document.getElementById("new-note").innerHTML = createFormRowHTML()
   document.getElementById("submit-note-form").classList = "add-note"
 }
 
 builder.viewEditForm = function(note, id) {
-  document.getElementById(`note${id}`).innerHTML = this.createFormRowHTML(note)
+  document.getElementById(`note${id}`).innerHTML = createFormRowHTML(note)
 
   document.getElementById("name").value = note.data.name
   document.getElementById("category").value = note.data.category
@@ -123,7 +117,7 @@ builder.switchArchiveElements = function(status) {
   }
 }
 
-builder.createFormRowHTML = function(note) {
+function createFormRowHTML(note) {
   let dates = ""
   let createDate = ""
   
@@ -142,6 +136,14 @@ builder.createFormRowHTML = function(note) {
     <td><button form="note-form" type="button" id="discard-note-form" title="Discard Changes"><i class="fa-solid fa-xmark"></i></button></td>
     <td></td>
   `
+}
+
+function createCategoriesSelectHTML(categories) {
+  let optionsHTML = ""
+  categories.forEach((category) => {
+    optionsHTML += `<option value="${category}">${category}</option>`
+  })
+  return optionsHTML
 }
 
 export default builder

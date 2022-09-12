@@ -5,13 +5,15 @@ import builder from "./builder.js"
 const noteController = {}
 
 noteController.deleteAllInTable = function() {
-  Note.deleteAllInTable()
-  this.refreshView()
+  if (confirm("Sure?")) {
+    Note.deleteAllInTable()
+    refreshView()
+  }
 }
 
 noteController.switchAllArchived = function() {
   Note.switchAllArchived()
-  this.refreshView()
+  refreshView()
 }
 
 noteController.deleteNote = function(id) {
@@ -19,34 +21,25 @@ noteController.deleteNote = function(id) {
     let note = Note.findById(id)
     if (note) {
       Note.delete(id)    
-      this.refreshView()
+      refreshView()
     }
   }
 }
 
-noteController.interruptEdit = function() {
-  if (Session.getData().editNoteId != -1) {
-    Session.interruptEditNote()
-  }
-  this.refreshView()
-  builder.hideNoteForm()
-}
 
 noteController.switchArchiveStatus = function() {
   Session.switchArchiveStatus()
   builder.hideNoteForm()
   builder.switchArchiveElements(Session.getData().archiveTableStatus)
-  this.interruptEdit()
+  interruptEdit()
 }
 
 noteController.createNote = function(formData) {
   let note = new Note(formData)
   note.create()
-
   builder.hideNoteForm()//errs view
-
   if (!note.errors.length) {
-    this.refreshView()
+    refreshView()
   }
 }
 
@@ -54,12 +47,12 @@ noteController.switchNoteArchived = function(id) {
   let note = Note.findById(id)
   if (note) {
     note.switchNoteArchived()    
-    this.refreshView()
+    refreshView()
   }
 }
 
 noteController.initEditSession = function(id) {
-  this.interruptEdit()
+  interruptEdit()
   let note = Note.findById(id)
   if (note) {
     Session.setEditSession(id)
@@ -73,7 +66,7 @@ noteController.updateNote = function(data) {
   if (note) {
     note.update(data)
   }
-  this.interruptEdit()
+  interruptEdit()
 }
 
 noteController.discardNoteForm = function() {
@@ -81,23 +74,28 @@ noteController.discardNoteForm = function() {
   this.interruptEdit()
 }
 
-noteController.refreshView = function() {
-  builder.refreshNotesTable(Note.findAll(), Session.getData().archiveTableStatus)
-  builder.refreshStatsTable(Note.findAll(), Note.getCategories())
-} 
-
 noteController.showCreateForm = function() {
   builder.viewCreateForm()
   builder.createCategorySelect(Note.getCategories())
 }
 
-noteController.hideNoteForm = function() {
-  builder.hideNoteForm()  
-}
-
 noteController.initTables = function() {
   Note.initiateNotesData()
-  this.refreshView()
+  refreshView()
 }
+
+function refreshView() {
+  builder.refreshNotesTable(Note.findAll(), Session.getData().archiveTableStatus)
+  builder.refreshStatsTable(Note.findAll(), Note.getCategories())
+} 
+
+function interruptEdit() {
+  Session.interruptEditNote()
+  refreshView()
+  builder.hideNoteForm()
+}
+
+
+
 
 export default noteController
