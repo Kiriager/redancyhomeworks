@@ -5,68 +5,81 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
+  <script src="https://kit.fontawesome.com/89e8d497c2.js" crossorigin="anonymous"></script>
   
   <title>Note App</title>
 </head>
 <body>
-  <h1>Hello from Note App</h1>
-  <table id="notes">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Created</th>
-        <th>Category</th>
-        <th>Content</th>
-        <th>Dates</th>
-        <th>Edit</th>
-        <th>Archive</th>
-        <th>Delete</th>
-      </tr>
-    </thead>
-    <tbody id="notes-body">
-      
-    </tbody>
-    <tfoot></tfoot>
-  </table>
-  <br>
-  <button id="create-note-button">Create Note</button>
-  <br><br>
-  
-  <form id="note-form" hidden>
-    <label for="name">Name</label>
-    <input type="text" id="name" name="name" autocomplete="off">
-    <br><br>
-
-    <label for="category">Category</label>
-    <select name="category" id="category">
-      
-    </select>
-    <br><br>
-
-    <label for="content">Content</label>
-    <input type="text" id="content" name="content" autocomplete="off">
+  <div class="main-container">
+    <table id="notes">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Created</th>
+          <th>Category</th>
+          <th>Content</th>
+          <th>Dates</th>
+          <th></th>
+          <th><button class="archive-all-notes"><i class="fa-solid fa-box-archive"></i></button></th>
+          <th><button class="delete-all-notes"><i class="fa-solid fa-trash"></i></button></th>
+        </tr>
+      </thead>
+      <tbody id="notes-body">
+        
+      </tbody>
+      <tfoot>
+        <tr id="new-note">
+          <!--<td><input type="text" id="name" name="name" autocomplete="off" form="note-form"></td>
+          <td></td>
+          <td><select form="note-form" name="category" id="category"></select></td>
+          <td><input form="note-form" type="text" id="content" name="content" autocomplete="off"></td>
+          <td></td>
+          <td><button form="note-form" type="button" class="add" id="submit-note-form"><i class="fa-solid fa-check"></i></button></td>
+          <td><button form="note-form" type="button" id="discard-note-form"><i class="fa-solid fa-xmark"></i></button></td>
+          <td></td>-->
+        </tr>
+      </tfoot>
+    </table>
+    <br>
+    <button id="create-note-button">Create Note</button>
     <br><br>
     
-    <button type="button" class="add" id="submit-note-form">Save</button>
-    <button type="button" id="discard-note-form">Discard</button>
-    <br><br>
-  </form>
+    <form id="note-form" hidden>
+      <!--
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" autocomplete="off">
+      
   
-  <table id="stats">
-    <thead>
-      <tr>
-        <th>Note Category</th>
-        <th>Active</th>
-        <th>Archived</th>
-      </tr>
-    </thead>
-    <tbody id="stats-body"></tbody>
-    <tfoot></tfoot>
-  </table>
+      <label for="category">Category</label>
+      <select name="category" id="category"></select>
 
-  <br>
-  <button id="swap-table-status">Show Archived Notes</button>
-  <br><br>
+  
+      <label for="content">Content</label>
+      <input type="text" id="content" name="content" autocomplete="off">
+ 
+      
+      <button type="button" class="add" id="submit-note-form">Save</button>
+      <button type="button" id="discard-note-form">Discard</button>
+      -->
+    </form>
+    
+    <table id="stats">
+      <thead>
+        <tr>
+          <th>Note Category</th>
+          <th>Active</th>
+          <th>Archived</th>
+        </tr>
+      </thead>
+      <tbody id="stats-body"></tbody>
+      <tfoot></tfoot>
+    </table>
+  
+    <br>
+    <button id="swap-table-status">Show Archived Notes</button>
+    <br><br>
+  </div>
+  
 
   <script type="module" src="./main.js"></script>  
 </body>

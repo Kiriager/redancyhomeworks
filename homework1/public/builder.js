@@ -18,9 +18,9 @@ function createNoteHTML(note, id) {
     <td>${note.data.category}</td>
     <td>${note.data.content}</td>
     <td>${getDates(note)}</td>
-    <td><button class="edit-note-button">Edit Icon</button></td>
-    <td><button class="archive-note-button">Archive Icon</button></td>
-    <td><button class="delete-note-button">Delete Icon</button></td>
+    <td><button class="edit-note-button"><i class="fa-solid fa-pen-to-square"></i></button></td>
+    <td><button class="archive-note-button"><i class="fa-solid fa-box-archive"></i></button></td>
+    <td><button class="delete-note-button"><i class="fa-solid fa-trash"></i></button></td>
   </tr>
   `
 }
@@ -89,32 +89,24 @@ builder.createCategorySelect = function (categories) {
 
 builder.viewCreateForm = function() {
   document.getElementById("create-note-button").hidden = true
-  document.getElementById("note-form").hidden = false
+  document.getElementById("new-note").innerHTML = this.createFormRowHTML()
   document.getElementById("submit-note-form").classList = "add-note"
 }
 
-builder.viewEditForm = function(note) {
+builder.viewEditForm = function(note, id) {
+  document.getElementById(`note${id}`).innerHTML = this.createFormRowHTML(note)
+
   document.getElementById("name").value = note.data.name
   document.getElementById("category").value = note.data.category
   document.getElementById("content").value = note.data.content
   
-  document.getElementById("note-form").hidden = false
   document.getElementById("create-note-button").hidden = true
   document.getElementById("submit-note-form").classList = "update-note"
 }
 
 builder.hideNoteForm = function() {
-  document.getElementById("note-form").reset()
-  document.getElementById("note-form").hidden = true
   document.getElementById("create-note-button").hidden = false
-}
-
-builder.hideNote = function(id) {
-  document.getElementById(`note${id}`).hidden = true
-}
-
-builder.viewNote = function(id) {
-  document.getElementById(`note${id}`).hidden = false
+  document.getElementById("new-note").innerHTML = ""
 }
 
 builder.switchArchiveElements = function(status) {
@@ -124,6 +116,27 @@ builder.switchArchiveElements = function(status) {
   } else {
     document.getElementById("swap-table-status").innerHTML = "Show Archive Notes"
   }
+}
+
+builder.createFormRowHTML = function(note) {
+  let dates = ""
+  let createDate = ""
+  
+  if (typeof(note) != "undefined") {
+    createDate = note.data.createDate
+    dates = getDates(note)
+  }
+ 
+  return `
+    <td><input type="text" id="name" name="name" autocomplete="off" form="note-form"></td>
+    <td>${createDate}</td>
+    <td><select form="note-form" name="category" id="category"></select></td>
+    <td><input form="note-form" type="text" id="content" name="content" autocomplete="off"></td>
+    <td>${dates}</td>
+    <td><button form="note-form" type="button" class="add" id="submit-note-form"><i class="fa-solid fa-check"></i></button></td>
+    <td><button form="note-form" type="button" id="discard-note-form"><i class="fa-solid fa-xmark"></i></button></td>
+    <td></td>
+  `
 }
 
 export default builder

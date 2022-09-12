@@ -6,8 +6,6 @@ const noteController = {}
 
 noteController.deleteNote = function(id) {
   this.interruptEdit()
-  this.refreshView()
-
   if (confirm("Sure?")) {
     let note = Note.findById(id)
     if (note) {
@@ -18,9 +16,8 @@ noteController.deleteNote = function(id) {
 }
 
 noteController.interruptEdit = function() {
-  let id = Session.getData().editNoteId
-  if (id != -1) {
-    builder.viewNote(id)
+  if (Session.getData().editNoteId != -1) {
+    this.refreshView()
     Session.interruptEditNote()
     builder.hideNoteForm()
   }
@@ -28,12 +25,9 @@ noteController.interruptEdit = function() {
 
 noteController.switchArchiveStatus = function() {
   Session.switchArchiveStatus()
-  this.interruptEdit()
-  
   builder.hideNoteForm()
   builder.switchArchiveElements(Session.getData().archiveTableStatus)
-
-  this.refreshView()
+  this.interruptEdit()
 }
 
 noteController.createNote = function(formData) {
@@ -60,8 +54,8 @@ noteController.initEditSession = function(id) {
   let note = Note.findById(id)
   if (note) {
     Session.setEditSession(id)
-    builder.hideNote(id)
-    builder.viewEditForm(note)
+    builder.viewEditForm(note, id)
+    builder.createCategorySelect(Note.getCategories())
   }
 }
 
@@ -71,13 +65,11 @@ noteController.updateNote = function(data) {
     note.update(data)
   }
   this.interruptEdit()
-  this.refreshView()
 }
 
 noteController.discardNoteForm = function() {
   builder.hideNoteForm()
   this.interruptEdit()
-  this.refreshView()
 }
 
 noteController.refreshView = function() {
@@ -87,6 +79,7 @@ noteController.refreshView = function() {
 
 noteController.showCreateForm = function() {
   builder.viewCreateForm()
+  builder.createCategorySelect(Note.getCategories())
 }
 
 noteController.hideNoteForm = function() {
@@ -96,7 +89,6 @@ noteController.hideNoteForm = function() {
 noteController.initTables = function() {
   Note.initiateNotesData()
   this.refreshView()
-  builder.createCategorySelect(Note.getCategories())
 }
 
 export default noteController
