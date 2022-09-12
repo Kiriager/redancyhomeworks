@@ -17,10 +17,10 @@ function createNoteHTML(note, id) {
     <td>${getFormateDate(note.data.createDate)}</td>
     <td>${note.data.category}</td>
     <td>${note.data.content}</td>
-    <td>${getDates(note)}</td>
-    <td><button class="edit-note-button"><i class="fa-solid fa-pen-to-square"></i></button></td>
-    <td><button class="archive-note-button"><i class="fa-solid fa-box-archive"></i></button></td>
-    <td><button class="delete-note-button"><i class="fa-solid fa-trash"></i></button></td>
+    <td>${getDatesList(note.getDates())}</td>
+    <td><button class="edit-note-button" title="Edit Note"><i class="fa-solid fa-pen-to-square"></i></button></td>
+    <td><button class="archive-note-button" title="Archive Note"><i class="fa-solid fa-box-archive"></i></button></td>
+    <td><button class="delete-note-button" title="Delete Note"><i class="fa-solid fa-trash"></i></button></td>
   </tr>
   `
 }
@@ -29,10 +29,11 @@ function getFormateDate(date) {
   return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
 }
 
-function getDates(note) {
-  return note.data.createDate
+function getDatesList(dates) {
+  return dates.map((date) => {
+    return getFormateDate(date)
+  }).join(", ")
 }
-
 /* Build statistics table functions */
 
 function getCategoryStats(notes, category) {
@@ -127,8 +128,8 @@ builder.createFormRowHTML = function(note) {
   let createDate = ""
   
   if (typeof(note) != "undefined") {
-    createDate = note.data.createDate
-    dates = getDates(note)
+    createDate = getFormateDate(note.data.createDate)
+    dates = getDatesList(note.getDates())
   }
  
   return `
@@ -137,8 +138,8 @@ builder.createFormRowHTML = function(note) {
     <td><select form="note-form" name="category" id="category"></select></td>
     <td><input form="note-form" type="text" id="content" name="content" autocomplete="off"></td>
     <td>${dates}</td>
-    <td><button form="note-form" type="button" class="add" id="submit-note-form"><i class="fa-solid fa-check"></i></button></td>
-    <td><button form="note-form" type="button" id="discard-note-form"><i class="fa-solid fa-xmark"></i></button></td>
+    <td><button form="note-form" type="button" class="add" id="submit-note-form" title="Save Note"><i class="fa-solid fa-check"></i></button></td>
+    <td><button form="note-form" type="button" id="discard-note-form" title="Discard Changes"><i class="fa-solid fa-xmark"></i></button></td>
     <td></td>
   `
 }

@@ -4,8 +4,17 @@ import builder from "./builder.js"
 
 const noteController = {}
 
+noteController.deleteAllInTable = function() {
+  Note.deleteAllInTable()
+  this.refreshView()
+}
+
+noteController.switchAllArchived = function() {
+  Note.switchAllArchived()
+  this.refreshView()
+}
+
 noteController.deleteNote = function(id) {
-  this.interruptEdit()
   if (confirm("Sure?")) {
     let note = Note.findById(id)
     if (note) {
@@ -17,10 +26,10 @@ noteController.deleteNote = function(id) {
 
 noteController.interruptEdit = function() {
   if (Session.getData().editNoteId != -1) {
-    this.refreshView()
     Session.interruptEditNote()
-    builder.hideNoteForm()
   }
+  this.refreshView()
+  builder.hideNoteForm()
 }
 
 noteController.switchArchiveStatus = function() {

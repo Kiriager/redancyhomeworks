@@ -2,8 +2,18 @@
   margin: 5%;
 }
 
-h1 {
-  color: green;
+table {
+  border-spacing: 0px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 5px solid white;
+  border-top: 5px solid white;
+  text-align: start;
+  height: 30px;
 }
 
 td {
@@ -15,27 +25,51 @@ th {
   background-color: grey;
 }
 
-th, td {
-  padding: 10px;
-  border-bottom: 5px solid white;
-  border-top: 5px solid white;
-  text-align: start;
-}
-
-table {
-  border-spacing: 0px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-tr {
-  border: 5px solid black;
-}
-
-form {
-  background-color: grey;
-}
+/*icon buttons*/
 
 button > i {
   pointer-events: none;
+  font-size: 20px;
+}
+
+td button > i {
+  color:#0f0f0f;
+}
+
+th button > i {
+  color:white;
+}
+
+td button {
+  border: none;
+  background-color:  #E8EAF5;
+}
+
+th button {
+  border: none;
+  background-color:  gray;
+}
+
+button.outside{
+  border: none;
+  background-color:  gray;
+  height: 35px;
+  color: white;
+}
+
+input[type=text], select {
+  height: 25px;
+  border: 3px solid white;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+  max-width: 120px;
+}
+
+select {
+  max-width: 100px
+}
+
+input[type=text]:focus {
+  border: 3px solid #555;
 }

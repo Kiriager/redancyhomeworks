@@ -1,4 +1,5 @@
 import {db} from "./db.js"
+import Session from "./Session.js"
 
 let Note = function(data) {
   this.data = data
@@ -69,7 +70,7 @@ Note.prototype.update = function(data) {
 }
 
 Note.prototype.switchNoteArchived = function() {
-  this.data.archived = !db.sessionData.archiveTableStatus
+  this.data.archived = !Session.getData().archiveTableStatus
 }
 
 Note.findById = function(noteId) {
@@ -95,15 +96,52 @@ Note.delete = function(id) {
 Note.initiateNotesData = function() {
   db.notes = [
     new Note({name: "buy books", createDate: new Date(), category: "Task",
-      content: "buy some books", archived: false}),
+      content: "buy some books at 14/09/2022", archived: false}),
     new Note({name: "buy more books", createDate: new Date(), category: "Idea", 
-        content: "buy some more books", archived: false}),
+        content: "buy some more books at 25/10/2022", archived: false}),
     new Note({name: "sell books", createDate: new Date(), category: "Random Thought",
         content: "sell some books", archived: true}),
     new Note({name: "read books", createDate: new Date(), category: "Task",
-        content: "read some books", archived: false})
+        content: "read some books at 25-11-2022", archived: false})
   ]
 }
 
+Note.prototype.getDates = function() {
+  let dates = (this.data.content + this.data.name).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g)
+  if (dates == null) {
+    return [this.data.createDate]
+  }
+  dates = dates.map((date) => {
+    return convertStringToDate(date)
+  })
+  return dates.concat(this.data.createDate)
+}
+
+function convertStringToDate(stringDate) {
+  let numbers = stringDate.match(/\d+/g).map((value) => {return parseInt(value)})
+  let month = numbers[1]
+  let day = numbers[0]
+  if (month > 12) {
+    month = numbers[0]
+    day = numbers[1]
+  }
+  return new Date(numbers[2], month, day)
+}
+
+Note.switchAllArchived = function() {
+  db.notes.forEach((note) => {
+    note.switchNoteArchived()
+  })
+}
+
+Note.deleteAllInTable = function() {
+  for (let i = 0; i < db.notes.length; i++) {
+    if (db.notes[i].data.archived == Session.getData().archiveTableStatus) {
+      console.log(i)
+      Note.delete(i)
+      i--
+    } 
+  }
+}
 
 export default Note
