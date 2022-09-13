@@ -95,14 +95,20 @@ Note.delete = function(id) {
 
 Note.initiateNotesData = function() {
   db.notes = [
-    new Note({name: "buy books", createDate: new Date(), category: "Task",
-      content: "buy some books at 14/09/2022", archived: false}),
-    new Note({name: "buy more books", createDate: new Date(), category: "Idea", 
-        content: "buy some more books at 25/10/2022", archived: false}),
-    new Note({name: "sell books", createDate: new Date(), category: "Random Thought",
-        content: "sell some books", archived: true}),
-    new Note({name: "read books", createDate: new Date(), category: "Task",
-        content: "read some books at 25-11-2022", archived: false})
+    new Note({name: "Buy books", createDate: new Date(), category: "Task",
+      content: "Buy some books in 14/09/2022", archived: false}),
+    new Note({name: "More books", createDate: new Date(), category: "Idea", 
+        content: "Buy some more books in 25/10/2022", archived: false}),
+    new Note({name: "Sell books", createDate: new Date(), category: "Random Thought",
+        content: "Sell some books", archived: true}),
+    new Note({name: "Read books", createDate: new Date(), category: "Idea",
+        content: "Read some books in 25-11-2022", archived: false}),
+    new Note({name: "Learn React", createDate: new Date(), category: "Task",
+        content: "Learn in 25-11-2022 and in 20.12.2022", archived: false}),
+    new Note({name: "Learn Node", createDate: new Date(), category: "Task",
+        content: "Learn continuesly", archived: false}),
+    new Note({name: "Go to gym", createDate: new Date(), category: "Idea",
+        content: "Don't forget about health", archived: true})
   ]
 }
 
@@ -112,6 +118,7 @@ Note.prototype.getDates = function() {
     return [this.data.createDate]
   }
   dates = dates.map((date) => {
+    
     return convertStringToDate(date)
   })
   return dates.concat(this.data.createDate)
@@ -125,7 +132,7 @@ function convertStringToDate(stringDate) {
     month = numbers[0]
     day = numbers[1]
   }
-  return new Date(numbers[2], month, day)
+  return new Date(numbers[2], month - 1, day)
 }
 
 Note.switchAllArchived = function() {

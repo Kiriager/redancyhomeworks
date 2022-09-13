@@ -71,7 +71,7 @@ noteController.updateNote = function(data) {
 
 noteController.discardNoteForm = function() {
   builder.hideNoteForm()
-  this.interruptEdit()
+  interruptEdit()
 }
 
 noteController.showCreateForm = function() {
