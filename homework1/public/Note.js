@@ -8,19 +8,19 @@ let Note = function(data) {
 
 Note.initiateNotesData = function() {
   db.notes = [
-    new Note({name: "Buy books", createDate: new Date(), category: "Task",
+    new Note({name: "Buy books", createDate: new Date(), category: db.categories[0],
       content: "Buy some books in 14/09/2022", archived: false}),
-    new Note({name: "More books", createDate: new Date(), category: "Idea", 
+    new Note({name: "More books", createDate: new Date(), category: db.categories[1], 
         content: "Buy some more books in 25/10/2022", archived: true}),
-    new Note({name: "Sell books", createDate: new Date(), category: "Random Thought",
+    new Note({name: "Sell books", createDate: new Date(), category: db.categories[2],
         content: "Sell some books", archived: true}),
-    new Note({name: "Read books", createDate: new Date(), category: "Idea",
+    new Note({name: "Read books", createDate: new Date(), category: db.categories[0],
         content: "Read some books in 25-11-2022", archived: false}),
-    new Note({name: "Learn React", createDate: new Date(), category: "Task",
+    new Note({name: "Learn React", createDate: new Date(), category: db.categories[0],
         content: "Learn in 25-11-2022 and in 20.12.2022", archived: false}),
-    new Note({name: "Learn Node", createDate: new Date(), category: "Task",
+    new Note({name: "Learn Node", createDate: new Date(), category: db.categories[0],
         content: "Learn continuesly", archived: false}),
-    new Note({name: "Go to gym in 10 19 2022", createDate: new Date(), category: "Idea",
+    new Note({name: "Go to gym in 10 19 2022", createDate: new Date(), category: db.categories[1],
         content: "Don't forget about health", archived: false})
   ]
 }
@@ -56,9 +56,14 @@ Note.prototype.validate = function() {
   if (this.data.category == "") {
     this.errors.push("Note category is required.") 
   }
-  if (!db.categories.includes(this.data.category)) {
+  
+  let categoriesTitles = db.categories.map((category) => {return category.title})
+  if (!categoriesTitles.includes(this.data.category)) {
     this.errors.push("Category has to be one of the list.") 
+  } else {
+    this.data.category = db.categories[categoriesTitles.indexOf(this.data.category)]
   }
+
   if (this.data.content == "") {
     this.errors.push("Note content is required.") 
   }

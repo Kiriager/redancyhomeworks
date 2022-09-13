@@ -79,3 +79,16 @@ input[type=text], select {
 input[type=text]:focus, select:focus {
   border:3px solid #555;
 }
+
+/*task icons container*/
+.task-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:rgb(218, 218, 218);
+  background-color: #303030;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+}

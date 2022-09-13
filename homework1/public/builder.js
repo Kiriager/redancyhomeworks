@@ -13,9 +13,10 @@ function createNotesTableHTML(notes, archiveStatus) {
 function createNoteHTML(note, id) {
   return `
   <tr id="note${id}">
+    <td>${createCategoryIconHTML(note.data.category.icon)}</td>
     <td>${note.data.name}</td>
     <td>${getFormateDate(note.data.createDate)}</td>
-    <td>${note.data.category}</td>
+    <td>${note.data.category.title}</td>
     <td>${note.data.content}</td>
     <td>${getDatesList(note.getDates())}</td>
     <td><button class="edit-note-button" title="Edit Note"><i class="fa-solid fa-pen-to-square"></i></button></td>
@@ -40,9 +41,9 @@ function getDatesList(dates) {
 /* Build statistics table functions */
 
 function getCategoryStats(notes, category) {
-  let categoryStats = {name: category, active: 0, archived: 0}
+  let categoryStats = {category: category, active: 0, archived: 0}
   notes.forEach(note => {
-    if (note.data.category == category) {
+    if (note.data.category.title == category.title) {
       if(note.data.archived) {
         categoryStats.archived++
       } else {
@@ -56,11 +57,16 @@ function getCategoryStats(notes, category) {
 function createCategoryHTML(categoryStats) {
   return `
   <tr>
-    <td>${categoryStats.name}</td>
+    <td>${createCategoryIconHTML(categoryStats.category.icon)}</td>
+    <td>${categoryStats.category.title}</td>
     <td>${categoryStats.active}</td>
     <td>${categoryStats.archived}</td>
   </tr>
   `
+}
+
+function createCategoryIconHTML(iconName) {
+  return `<div class="task-icon-container"><i class="${iconName}"></i></div>`
 }
 
 function createCategoriesTableHTML(notes, categories) {
@@ -97,7 +103,7 @@ builder.viewEditForm = function(note, id) {
   document.getElementById(`note${id}`).innerHTML = createFormRowHTML(note)
 
   document.getElementById("name").value = note.data.name
-  document.getElementById("category").value = note.data.category
+  document.getElementById("category").value = note.data.category.title
   document.getElementById("content").value = note.data.content
   
   document.getElementById("create-note-button").hidden = true
@@ -128,6 +134,7 @@ function createFormRowHTML(note) {
   }
  
   return `
+    <td></td>
     <td><input type="text" id="name" name="name" autocomplete="off" form="note-form"></td>
     <td>${createDate}</td>
     <td><select form="note-form" name="category" id="category"></select></td>
@@ -142,9 +149,12 @@ function createFormRowHTML(note) {
 function createCategoriesSelectHTML(categories) {
   let optionsHTML = ""
   categories.forEach((category) => {
-    optionsHTML += `<option value="${category}">${category}</option>`
+    optionsHTML += `<option value="${category.title}">${category.title}</option>`
   })
   return optionsHTML
 }
 
+function getCategoryIconHTML(category) {  
+  
+}
 export default builder
