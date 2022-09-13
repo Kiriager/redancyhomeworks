@@ -26,7 +26,6 @@ noteController.deleteNote = function(id) {
   }
 }
 
-
 noteController.switchArchiveStatus = function() {
   Session.switchArchiveStatus()
   builder.hideNoteForm()
