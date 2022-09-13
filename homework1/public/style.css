@@ -13,7 +13,7 @@ th, td {
   border-bottom: 5px solid white;
   border-top: 5px solid white;
   text-align: start;
-  height: 30px;
+  height: 35px;
 }
 
 td {
@@ -33,43 +33,49 @@ button > i {
 }
 
 td button > i {
-  color:#0f0f0f;
+  color:#303030;
+}
+
+td button:hover > i {
+  color:#7a7a7a;
 }
 
 th button > i {
   color:white;
 }
 
+th button:hover > i {
+  color:#d8d8d8;
+}
+
 td button {
   border: none;
-  background-color:  #E8EAF5;
+  background-color: #E8EAF5;
 }
 
 th button {
   border: none;
-  background-color:  gray;
+  background-color: gray;
 }
 
-button.outside{
+button.outside {
   border: none;
-  background-color:  gray;
+  background-color: gray;
   height: 35px;
   color: white;
+  margin: 15px 0px;
 }
 
 input[type=text], select {
-  height: 25px;
+  box-sizing: border-box;
+  height: 100%;
   border: 3px solid white;
   -webkit-transition: 0.5s;
   transition: 0.5s;
   outline: none;
-  max-width: 120px;
+  width: 100%;
 }
 
-select {
-  max-width: 100px
-}
-
-input[type=text]:focus {
-  border: 3px solid #555;
+input[type=text]:focus, select:focus {
+  border:3px solid #555;
 }

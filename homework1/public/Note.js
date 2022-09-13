@@ -115,12 +115,12 @@ Note.delete = function(id) {
 Note.prototype.getDates = function() {
   let dates = (this.data.content + this.data.name).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g)
   if (dates == null) {
-    return [this.data.createDate]
+    return []
   }
   dates = dates.map((date) => {
     return convertStringToDate(date)
   })
-  return dates.concat(this.data.createDate)
+  return dates
 }
 
 function convertStringToDate(stringDate) {

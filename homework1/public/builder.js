@@ -30,6 +30,9 @@ function getFormateDate(date) {
 }
 
 function getDatesList(dates) {
+  if (!dates.length) {
+    return ""
+  }
   return dates.map((date) => {
     return getFormateDate(date)
   }).join(", ")
@@ -70,8 +73,6 @@ function createCategoriesTableHTML(notes, categories) {
 
 /* Build categories select*/
 
-
-
 let builder = {}
 
 builder.refreshStatsTable = function (notesList, categories) {
@@ -83,7 +84,7 @@ builder.refreshNotesTable = function (notesList, archived) {
 }
 
 builder.createCategorySelect = function (categories) {
-  document.getElementById("category").innerHTML = createCategoriesSelectHTML(categories)  
+  document.querySelector("select").innerHTML = createCategoriesSelectHTML(categories)  
 }
 
 builder.viewCreateForm = function() {
