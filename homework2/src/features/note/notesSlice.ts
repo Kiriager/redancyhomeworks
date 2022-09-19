@@ -4,7 +4,8 @@ import { RootState } from '../../app/store';
 
 export interface NotesState {
   notesList: NoteData[],
-  categoriesList: Category[]
+  categoriesList: Category[],
+  showArchiveNotes: boolean
 //  tableArchiveStatus: "arhived" | "active",
 //   status: 'idle' | 'loading' | 'failed';
 }
@@ -30,7 +31,6 @@ export interface CategoryStats {
   archived: number
 }
 
-
 const initialState: NotesState = {
   notesList: [
     {id: 1, name: "task1", createDate: new Date(), archivedStatus: false, 
@@ -42,7 +42,7 @@ const initialState: NotesState = {
     {id: 3, name: "task3", createDate: new Date(), archivedStatus: false, 
         content: "do task 3 in 19.11.2022 and in 16/10/2022", 
         category: {categoryName: "Task", categoryIcon: "fa-solid fa-thumbtack"}, editStatus: false},
-    {id: 4, name: "task4", createDate: new Date(), archivedStatus: false, 
+    {id: 4, name: "task4", createDate: new Date(), archivedStatus: true, 
         content: "Just nice thought", 
         category: {categoryName: "Random Thought", categoryIcon: "fa-solid fa-lightbulb"}, editStatus: false}
   ],
@@ -50,8 +50,8 @@ const initialState: NotesState = {
     {categoryName: "Task", categoryIcon: "fa-solid fa-thumbtack"}, 
     {categoryName: "Idea", categoryIcon: "fa-solid fa-gears"}, 
     {categoryName: "Random Thought", categoryIcon: "fa-solid fa-lightbulb"}
-  ]
-  //tableArchiveStatus: "active"
+  ],
+  showArchiveNotes: false
 }
 
 
@@ -75,8 +75,13 @@ export const noteSlice = createSlice({
     remove: (state) => {
       
     },
-    archive: (state) => {
-      
+    archive: (state, action: PayloadAction<number>) => {
+      alert(action.payload)
+      console.log(action.payload);
+      let note = state.notesList.find((note) => {return note.id == action.payload})
+      if (typeof(note) != 'undefined') {
+        note.archivedStatus = !note.archivedStatus
+      }
     },
     unarchive: (state) => {
       

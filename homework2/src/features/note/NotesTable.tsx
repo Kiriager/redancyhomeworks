@@ -2,14 +2,10 @@ import React, { useState } from 'react';
 import { CategoryStats, NoteData, Category } from "./notesSlice";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-// import {
-//   decrement,
-//   increment,
-//   incrementByAmount,
-//   incrementAsync,
-//   incrementIfOdd,
-//   selectCount,
-// } from './counterSlice';
+
+import {
+  archive,
+} from './notesSlice';
 
 import styles from './Note.module.css';
 import notesSlice from './notesSlice';
@@ -29,12 +25,12 @@ export function NotesTable() {
           <th></th>
           <th>
             <button id="archive-all-notes" title="Archive/Unarchaive All">
-              <i className="fa-solid fa-box-archive">Archive All</i>
+              <i className="fa-solid fa-box-archive"></i>
             </button>
           </th>
           <th>
             <button id="delete-table-all-notes" title="Delete All">
-              <i className="fa-solid fa-trash">Delete All</i>
+              <i className="fa-solid fa-trash"></i>
             </button>
           </th>
         </tr>
@@ -45,12 +41,15 @@ export function NotesTable() {
       <tfoot><tr id="new-note"></tr></tfoot>
     </table>
 
-    // <button id="create-note-button" className="outside">Create Note</button>
-
-
-
-    // <button id="swap-table-status" className="outside">Show Archived Notes</button>
   )
+}
+
+export function CreateNoteButton() {
+  return (<button id="create-note-button" className="outside">Create Note</button>)
+}
+
+export function TableStatusButton() {
+  return (<button id="swap-table-status" className="outside">Show Archived Notes</button>)
 }
 
 export function StatsTable() {
@@ -100,12 +99,14 @@ function CategoryStatsRow(categoryStats: CategoryStats) {
 function CategoryIcon(category: Category) {
   return (
     <div className="task-icon-container">
-      <i className={category.categoryIcon}>{category.categoryIcon}</i>
+      <i className={category.categoryIcon}></i>
     </div>
   )
 }
 
 function SingleNote(note: NoteData) {
+  const dispatch = useAppDispatch();
+  
   return (
     <tr>
       <td><CategoryIcon {...note.category}/></td>
@@ -114,9 +115,23 @@ function SingleNote(note: NoteData) {
       <td>{note.category.categoryName}</td>
       <td>{note.content}</td>
       <td>{stringifyDatesList(extractDates(note.content, note.name))}</td>
-      <td><button className="edit-note-button" title="Edit Note"><i className="fa-solid fa-pen-to-square">edit</i></button></td>
-      <td><button className="archive-note-button" title="Archive/Unarchive Note"><i className="fa-solid fa-box-archive">archive</i></button></td>
-      <td><button className="delete-note-button" title="Delete Note"><i className="fa-solid fa-trash">delete</i></button></td>
+      <td>
+        <button 
+            className="edit-note-button" title="Edit Note">
+          <i className="fa-solid fa-pen-to-square"></i>
+        </button>
+      </td>
+      <td>
+        <button className="archive-note-button" title="Archive/Unarchive Note"
+            onClick={(e) => dispatch(archive(2))} >
+          <i className="fa-solid fa-box-archive"></i>
+        </button>
+      </td>
+      <td>
+        <button className="delete-note-button" title="Delete Note">
+          <i className="fa-solid fa-trash"></i>
+        </button>
+      </td>
     </tr>
   )
 }
@@ -125,7 +140,7 @@ function NoteRows() {
   const notes = useAppSelector(state => state.notes.notesList)
   return (
     <tbody>
-      {notes.map(note => {
+      {notes.filter((note) => {return !note.archivedStatus}).map(note => {
         return (<SingleNote {...note} />)
       })
       }
