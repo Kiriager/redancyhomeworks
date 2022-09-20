@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-
 import { Category, CategoryStats, Note, noteService } from "./Note";
-
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import {
   switchArchiveStatus, remove, edit, switchTableArchiveStatus, 
-  showCreateForm, hideCreateForm, add, discardEditForm, initiateEditNote
+  showCreateForm, hideCreateForm, add, discardEditForm, initiateEditNote, setAllNotesArchiveStatus
 } from './notesSlice';
 
 import styles from './Note.module.css';
-import notesActions from './notesSlice';
+
 
 export function NotesTable() {
+  const dispatch = useAppDispatch()
   const formStatus = useAppSelector(state => state.notes.showCreateForm)
   const tableArchiveStatus = useAppSelector(state => state.notes.showArchiveNotes)
   return (
@@ -27,7 +26,8 @@ export function NotesTable() {
           <th>Dates</th>
           <th></th>
           <th>
-            <button id="archive-all-notes" title="Archive/Unarchaive All">
+            <button id="archive-all-notes" title="Archive/Unarchaive All"
+            onClick={() => dispatch(setAllNotesArchiveStatus(!tableArchiveStatus))}>
               <i className="fa-solid fa-box-archive"></i>
             </button>
           </th>
@@ -50,7 +50,7 @@ export function NotesTable() {
 }
 
 export function CreateNoteButton() {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
   return (
     <tr>
       <button id="create-note-button" className="outside"

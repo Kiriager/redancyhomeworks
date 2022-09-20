@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { noteService, Note, Category, NoteFormData } from "./Note"
-import { RootState } from '../../app/store';
-
-//import { fetchCount } from './counterAPI';
 
 export interface NotesState {
   notesList: Note[],
@@ -12,21 +9,13 @@ export interface NotesState {
   ids: number
 }
 
-
-
 const initialState: NotesState = {
-  categoriesList: [
-    { categoryName: "Task", categoryIcon: "fa-solid fa-thumbtack" },
-    { categoryName: "Idea", categoryIcon: "fa-solid fa-gears" },
-    { categoryName: "Random Thought", categoryIcon: "fa-solid fa-lightbulb" }
-  ],
+  categoriesList: noteService.categoriesList,
   showArchiveNotes: false,
   showCreateForm: false,
   notesList: noteService.initialNotesList,
-  ids: 5
+  ids: 6
 }
-
-
 
 const noteSlice = createSlice({
   name: 'notes',
@@ -60,7 +49,6 @@ const noteSlice = createSlice({
         }
       }
     },
-    // Use the PayloadAction type to declare the contents of `action.payload`
     remove: (state, action: PayloadAction<number>) => {
       let noteId = state.notesList.findIndex((note) => { return note.id === action.payload })
       if (noteId >= 0) {
@@ -74,6 +62,7 @@ const noteSlice = createSlice({
       }
     },
     switchTableArchiveStatus: (state) => {
+      state.notesList.map((note) => {note.editStatus = false})
       state.showArchiveNotes = !state.showArchiveNotes
       state.showCreateForm = false
     },
@@ -94,29 +83,19 @@ const noteSlice = createSlice({
       if (typeof (note) != 'undefined') {
         note.editStatus = true
       }
+    },
+    setAllNotesArchiveStatus: (state, action: PayloadAction<boolean>) => {
+      state.notesList.map((note) => {
+        note.editStatus = false
+        note.archivedStatus = action.payload
+      })
     }
-
   },
   
 });
 
 export const { add, edit, switchArchiveStatus, remove, switchTableArchiveStatus, 
-    showCreateForm, hideCreateForm, discardEditForm, initiateEditNote} = noteSlice.actions;
-
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-//export const selectCategories = (state: RootState) => state.notes.categoriesList;
-
-
-
-
-// export selectCategories = (state) => {
-//   retrun state
-// }
-
-// We can also write thunks by hand, which may contain both sync and async logic.
-// Here's an example of conditionally dispatching actions based on current state.
+  showCreateForm, hideCreateForm, discardEditForm, initiateEditNote, 
+  setAllNotesArchiveStatus} = noteSlice.actions
 
 export default noteSlice.reducer;
