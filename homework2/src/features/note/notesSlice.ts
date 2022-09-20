@@ -39,6 +39,21 @@ export const noteSlice = createSlice({
     add: (state, action:  PayloadAction<NoteFormData>) => {
       console.log(action.payload);
       state.showCreateForm = false
+      let formData = noteService.cleanUpFormData({
+        name: action.payload.name,
+        categoryName: action.payload.categoryName,
+        content: action.payload.content
+      })
+      let note = noteService.createNote(formData, state.ids)
+      let errors = noteService.validate(note, state.categoriesList)
+      if(!errors.length) {
+        state.notesList.push(note)
+        console.log(state.notesList);
+        
+        state.ids++
+      } else {
+        console.log(errors);
+      }
 
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,

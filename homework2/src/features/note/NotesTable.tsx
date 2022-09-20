@@ -176,7 +176,8 @@ function NoteForm() {
   let createDate = ""
 
   const [name, setName] = useState("")
-  const [categoryName, setCategoryName] = useState("")
+  const [categoryName, setCategoryName] = useState(useAppSelector(state => {
+    return state.notes.categoriesList[0].categoryName}))
   const [content, setContent] = useState("")
 
   return (
@@ -217,50 +218,6 @@ function NoteForm() {
     </tr>
   )
 }
-
-// function formatDate(date: Date) {
-//   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-// }
-
-// function extractDates(content: string, name: string) {
-//   let stringDates = (content + name).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g)
-//   if (stringDates == null) {
-//     return new Array<Date>
-//   }
-//   let dates = stringDates.map((date) => {
-//     return convertStringToDate(date)
-//   })
-//   return dates
-// }
-
-// function convertStringToDate(stringDate: string) {
-//   let stringDayMonthYear = stringDate.match(/\d+/g)
-//   if (stringDayMonthYear == null) {
-//     return new Date()
-//   }
-//   let numberDayMonthYear = stringDayMonthYear.map((value) => { return parseInt(value) })
-//   return new Date(...formatDateNumbers(numberDayMonthYear))
-// }
-
-// function formatDateNumbers(numbers: number[]) {
-//   let month = numbers[1]
-//   let day = numbers[0]
-//   if (month > 12) {
-//     month = numbers[0]
-//     day = numbers[1]
-//   }
-//   const result = [numbers[2], month - 1, day] as const
-//   return result
-// }
-
-// function stringifyDatesList(dates: Date[] | null) {
-//   if (dates == null || !dates.length) {
-//     return ""
-//   }
-//   return dates.map((date) => {
-//     return formatDate(date)
-//   }).join(", ")
-// }
 
 function CategoryOptions() {
   let categories = useAppSelector(state => state.notes.categoriesList)
