@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { CategoryStats, NoteData, Category } from "./notesSlice";
+import { CategoryStats, getCategoryStats} from "./notesSlice";
+import { Category, Note, noteService } from "./Note";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import {
-  archive,
+  switchArchiveStatus, remove, edit, switchTableArchiveStatus, showCreateForm, hideCreateForm, add
 } from './notesSlice';
 
 import styles from './Note.module.css';
 import notesSlice from './notesSlice';
 
 export function NotesTable() {
-
+  const formStatus = useAppSelector(state => state.notes.showCreateForm)
+  const tableArchiveStatus = useAppSelector(state => state.notes.showArchiveNotes)
   return (
     <table className={styles.notes}>
       <thead>
@@ -38,18 +40,34 @@ export function NotesTable() {
 
       <NoteRows />
 
-      <tfoot><tr id="new-note"></tr></tfoot>
+      <tfoot>
+        {formStatus ? <NoteForm /> : !tableArchiveStatus ? <CreateNoteButton /> : ""}
+      </tfoot>
     </table>
 
   )
 }
 
 export function CreateNoteButton() {
-  return (<button id="create-note-button" className="outside">Create Note</button>)
+  const dispatch = useAppDispatch();
+  return (
+    <tr>
+      <button id="create-note-button" className="outside"
+        onClick={() => dispatch(showCreateForm())}>
+        Create Note
+      </button>
+    </tr>
+  )
 }
 
 export function TableStatusButton() {
-  return (<button id="swap-table-status" className="outside">Show Archived Notes</button>)
+  const dispatch = useAppDispatch();
+  return (
+    <button id="swap-table-status" className="outside"
+      onClick={() => dispatch(switchTableArchiveStatus())}>
+      Show Archived Notes
+    </button>
+  )
 }
 
 export function StatsTable() {
@@ -71,24 +89,24 @@ export function StatsTable() {
 }
 
 
-function getCategoryStats(notes: NoteData[], category: Category) {
-  let categoryStats = { category: category, active: 0, archived: 0 }
-  notes.forEach(note => {
-    if (note.category.categoryName == category.categoryName) {
-      if (note.archivedStatus) {
-        categoryStats.archived++
-      } else {
-        categoryStats.active++
-      }
-    }
-  })
-  return categoryStats
-}
+// function getCategoryStats(notes: NoteData[], category: Category) {
+//   let categoryStats = { category: category, active: 0, archived: 0 }
+//   notes.forEach(note => {
+//     if (note.category.categoryName == category.categoryName) {
+//       if (note.archivedStatus) {
+//         categoryStats.archived++
+//       } else {
+//         categoryStats.active++
+//       }
+//     }
+//   })
+//   return categoryStats
+// }
 
 function CategoryStatsRow(categoryStats: CategoryStats) {
   return (
     <tr>
-      <td><CategoryIcon {...categoryStats.category}/></td>
+      <td><CategoryIcon {...categoryStats.category} /></td>
       <td>{categoryStats.category.categoryName}</td>
       <td>{categoryStats.active}</td>
       <td>{categoryStats.archived}</td>
@@ -104,115 +122,157 @@ function CategoryIcon(category: Category) {
   )
 }
 
-function SingleNote(note: NoteData) {
+function SingleNote(note: Note) {
   const dispatch = useAppDispatch();
+  //let note = prop.note
+
+    return (
+      <tr>
+        <td><CategoryIcon {...note.category} /></td>
+        <td>{note.name}</td>
+        <td>{noteService.formatDate(note.createDate)}</td>
+        <td>{note.category.categoryName}</td>
+        <td>{note.content}</td>
+        <td>{noteService.extractDates(note)}</td>
+        <td>
+          <button className="edit-note-button" title="Edit Note"
+            onClick={() => dispatch(edit(note.id))}>
+            <i className="fa-solid fa-pen-to-square"></i>
+          </button>
+        </td>
+        <td>
+          <button className="archive-note-button" title="Archive/Unarchive Note"
+            onClick={() => dispatch(switchArchiveStatus(note.id))}>
+            <i className="fa-solid fa-box-archive"></i>
+          </button>
+        </td>
+        <td>
+          <button className="delete-note-button" title="Delete Note"
+            onClick={() => dispatch(remove(note.id))}>
+            <i className="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    )
   
-  return (
-    <tr>
-      <td><CategoryIcon {...note.category}/></td>
-      <td>{note.name}</td>
-      <td>{formatDate(note.createDate)}</td>
-      <td>{note.category.categoryName}</td>
-      <td>{note.content}</td>
-      <td>{stringifyDatesList(extractDates(note.content, note.name))}</td>
-      <td>
-        <button 
-            className="edit-note-button" title="Edit Note">
-          <i className="fa-solid fa-pen-to-square"></i>
-        </button>
-      </td>
-      <td>
-        <button className="archive-note-button" title="Archive/Unarchive Note"
-            onClick={(e) => dispatch(archive(2))} >
-          <i className="fa-solid fa-box-archive"></i>
-        </button>
-      </td>
-      <td>
-        <button className="delete-note-button" title="Delete Note">
-          <i className="fa-solid fa-trash"></i>
-        </button>
-      </td>
-    </tr>
-  )
 }
 
 function NoteRows() {
   const notes = useAppSelector(state => state.notes.notesList)
+  const tableArchiveStatus = useAppSelector(state => state.notes.showArchiveNotes)
   return (
     <tbody>
-      {notes.filter((note) => {return !note.archivedStatus}).map(note => {
-        return (<SingleNote {...note} />)
-      })
+      {notes.filter((note) => { return note.archivedStatus === tableArchiveStatus }).map((note) => {
+          return (<SingleNote {...note}/>)
+        })
       }
     </tbody>
   )
 }
 
-// function createFormRowHTML(note) {
-//   let dates = ""
-//   let createDate = ""
+function NoteForm() {
+  const dispatch = useAppDispatch();
+  let dates = ""
+  let createDate = ""
 
-//   if (typeof(note) != "undefined") {
-//     createDate = getFormateDate(note.data.createDate)
-//     dates = getDatesList(note.getDates())
-//   }
+  const [name, setName] = useState("")
+  const [categoryName, setCategoryName] = useState("")
+  const [content, setContent] = useState("")
 
-//   return `
-//     <td></td>
-//     <td><input type="text" id="name" name="name" autocomplete="off" form="note-form"></td>
-//     <td>${createDate}</td>
-//     <td><select form="note-form" name="category" id="category"></select></td>
-//     <td><input form="note-form" type="text" id="content" name="content" autocomplete="off"></td>
-//     <td>${dates}</td>
-//     <td><button form="note-form" type="button" class="add" id="submit-note-form" title="Save Note"><i class="fa-solid fa-check"></i></button></td>
-//     <td><button form="note-form" type="button" id="discard-note-form" title="Discard Changes"><i class="fa-solid fa-xmark"></i></button></td>
-//     <td></td>
-//   `
+  return (
+    <tr id="new-note">
+      <td><form id="note-form"></form></td>
+      <td>
+        <input form="note-form" type="text" id="name" name="name" autoComplete="off"
+          value={name}
+          onChange={(e) => { setName(e.target.value) }} />
+      </td>
+      <td>{createDate}</td>
+      <td>
+        <select name="category" form="note-form"
+          value={categoryName}
+          onChange={(e) => { setCategoryName(e.target.value) }}>
+          <CategoryOptions />
+        </select>
+      </td>
+      <td>
+        <input form="note-form" type="text" name="content" autoComplete="off"
+          value={content}
+          onChange={(e) => { setContent(e.target.value) }} />
+      </td>
+      <td>{dates}</td>
+      <td>
+        <button form="note-form" type="button" className="add" title="Save Note"
+          onClick={() => dispatch(add({ name: name, categoryName: categoryName, content: content }))}>
+          <i className="fa-solid fa-check"></i>
+        </button>
+      </td>
+      <td>
+        <button form="note-form" type="button" title="Discard Changes"
+          onClick={() => dispatch(hideCreateForm())}>
+          <i className="fa-solid fa-xmark"></i>
+        </button>
+      </td>
+      <td></td>
+    </tr>
+  )
+}
+
+// function formatDate(date: Date) {
+//   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 // }
 
-function formatDate(date: Date) {
-  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+// function extractDates(content: string, name: string) {
+//   let stringDates = (content + name).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g)
+//   if (stringDates == null) {
+//     return new Array<Date>
+//   }
+//   let dates = stringDates.map((date) => {
+//     return convertStringToDate(date)
+//   })
+//   return dates
+// }
+
+// function convertStringToDate(stringDate: string) {
+//   let stringDayMonthYear = stringDate.match(/\d+/g)
+//   if (stringDayMonthYear == null) {
+//     return new Date()
+//   }
+//   let numberDayMonthYear = stringDayMonthYear.map((value) => { return parseInt(value) })
+//   return new Date(...formatDateNumbers(numberDayMonthYear))
+// }
+
+// function formatDateNumbers(numbers: number[]) {
+//   let month = numbers[1]
+//   let day = numbers[0]
+//   if (month > 12) {
+//     month = numbers[0]
+//     day = numbers[1]
+//   }
+//   const result = [numbers[2], month - 1, day] as const
+//   return result
+// }
+
+// function stringifyDatesList(dates: Date[] | null) {
+//   if (dates == null || !dates.length) {
+//     return ""
+//   }
+//   return dates.map((date) => {
+//     return formatDate(date)
+//   }).join(", ")
+// }
+
+function CategoryOptions() {
+  let categories = useAppSelector(state => state.notes.categoriesList)
+  return (
+    <>
+      {categories.map((category) => {
+        return(<option value={category.categoryName}>{category.categoryName}</option>)
+      })}
+    </>
+  )
 }
 
-function extractDates(content: string, name: string) {
-  let stringDates = (content + name).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g)
-  if (stringDates == null) {
-    return new Array<Date>
-  }
-  let dates = stringDates.map((date) => {
-    return convertStringToDate(date)
-  })
-  return dates
-}
-
-function convertStringToDate(stringDate: string) {
-  let stringDayMonthYear = stringDate.match(/\d+/g)
-  if (stringDayMonthYear == null) {
-    return new Date()
-  }
-  let numberDayMonthYear = stringDayMonthYear.map((value) => { return parseInt(value) })
-  return new Date(...formatDateNumbers(numberDayMonthYear))
-}
-
-function formatDateNumbers(numbers: number[]) {
-  let month = numbers[1]
-  let day = numbers[0]
-  if (month > 12) {
-    month = numbers[0]
-    day = numbers[1]
-  }
-  const result = [numbers[2], month - 1, day] as const
-  return result
-}
-
-function stringifyDatesList(dates: Date[] | null) {
-  if (dates == null || !dates.length) {
-    return ""
-  }
-  return dates.map((date) => {
-    return formatDate(date)
-  }).join(", ")
-}
 
 // export function Counter() {
 //   const count = useAppSelector(selectCount);

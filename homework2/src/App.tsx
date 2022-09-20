@@ -10,7 +10,7 @@ function App() {
         
         {/* <Counter /> */}
         <NotesTable />
-        <CreateNoteButton />
+        
         <StatsTable />
         <TableStatusButton />
         
