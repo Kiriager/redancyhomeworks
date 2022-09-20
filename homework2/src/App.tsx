@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NotesTable, StatsTable, CreateNoteButton, TableStatusButton } from './features/note/NotesTable';
+import { NotesTable, StatsTable, CreateNoteButton, TableArchiveStatusButton } from './features/note/NotesTable';
 import './App.css';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
         <NotesTable />
         
         <StatsTable />
-        <TableStatusButton />
+        <TableArchiveStatusButton />
         
       </header>
     </div>

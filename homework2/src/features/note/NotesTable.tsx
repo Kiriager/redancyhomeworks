@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { CategoryStats, getCategoryStats} from "./notesSlice";
-import { Category, Note, noteService } from "./Note";
+
+import { Category, CategoryStats, Note, noteService } from "./Note";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import {
-  switchArchiveStatus, remove, edit, switchTableArchiveStatus, showCreateForm, hideCreateForm, add
+  switchArchiveStatus, remove, edit, switchTableArchiveStatus, 
+  showCreateForm, hideCreateForm, add, discardEditForm, initiateEditNote
 } from './notesSlice';
 
 import styles from './Note.module.css';
-import notesSlice from './notesSlice';
+import notesActions from './notesSlice';
 
 export function NotesTable() {
   const formStatus = useAppSelector(state => state.notes.showCreateForm)
@@ -53,14 +54,14 @@ export function CreateNoteButton() {
   return (
     <tr>
       <button id="create-note-button" className="outside"
-        onClick={() => dispatch(showCreateForm())}>
+          onClick={() => dispatch(showCreateForm())}>
         Create Note
       </button>
     </tr>
   )
 }
 
-export function TableStatusButton() {
+export function TableArchiveStatusButton() {
   const dispatch = useAppDispatch();
   return (
     <button id="swap-table-status" className="outside"
@@ -81,27 +82,12 @@ export function StatsTable() {
       </thead>
       <tbody>
         {categories.map((category) => {
-          return (<CategoryStatsRow {...getCategoryStats(notes, category)} />)
+          return (<CategoryStatsRow {...noteService.getCategoryStats(notes, category)} />)
         })}
       </tbody>
     </table>
   )
 }
-
-
-// function getCategoryStats(notes: NoteData[], category: Category) {
-//   let categoryStats = { category: category, active: 0, archived: 0 }
-//   notes.forEach(note => {
-//     if (note.category.categoryName == category.categoryName) {
-//       if (note.archivedStatus) {
-//         categoryStats.archived++
-//       } else {
-//         categoryStats.active++
-//       }
-//     }
-//   })
-//   return categoryStats
-// }
 
 function CategoryStatsRow(categoryStats: CategoryStats) {
   return (
@@ -124,37 +110,34 @@ function CategoryIcon(category: Category) {
 
 function SingleNote(note: Note) {
   const dispatch = useAppDispatch();
-  //let note = prop.note
-
-    return (
-      <tr>
-        <td><CategoryIcon {...note.category} /></td>
-        <td>{note.name}</td>
-        <td>{noteService.formatDate(note.createDate)}</td>
-        <td>{note.category.categoryName}</td>
-        <td>{note.content}</td>
-        <td>{noteService.extractDates(note)}</td>
-        <td>
-          <button className="edit-note-button" title="Edit Note"
-            onClick={() => dispatch(edit(note.id))}>
-            <i className="fa-solid fa-pen-to-square"></i>
-          </button>
-        </td>
-        <td>
-          <button className="archive-note-button" title="Archive/Unarchive Note"
-            onClick={() => dispatch(switchArchiveStatus(note.id))}>
-            <i className="fa-solid fa-box-archive"></i>
-          </button>
-        </td>
-        <td>
-          <button className="delete-note-button" title="Delete Note"
-            onClick={() => dispatch(remove(note.id))}>
-            <i className="fa-solid fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-    )
-  
+  return (
+    <tr>
+      <td><CategoryIcon {...note.category} /></td>
+      <td>{note.name}</td>
+      <td>{noteService.formatDate(note.createDate)}</td>
+      <td>{note.category.categoryName}</td>
+      <td>{note.content}</td>
+      <td>{noteService.extractDates(note)}</td>
+      <td>
+        <button className="edit-note-button" title="Edit Note"
+          onClick={() => dispatch(initiateEditNote(note.id))}>
+          <i className="fa-solid fa-pen-to-square"></i>
+        </button>
+      </td>
+      <td>
+        <button className="archive-note-button" title="Archive/Unarchive Note"
+          onClick={() => dispatch(switchArchiveStatus(note.id))}>
+          <i className="fa-solid fa-box-archive"></i>
+        </button>
+      </td>
+      <td>
+        <button className="delete-note-button" title="Delete Note"
+          onClick={() => dispatch(remove(note.id))}>
+          <i className="fa-solid fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  )
 }
 
 function NoteRows() {
@@ -163,7 +146,11 @@ function NoteRows() {
   return (
     <tbody>
       {notes.filter((note) => { return note.archivedStatus === tableArchiveStatus }).map((note) => {
+        if (note.editStatus) {
+          return (<EditNoteForm {...note}/>)
+        } else {
           return (<SingleNote {...note}/>)
+        }
         })
       }
     </tbody>
@@ -171,10 +158,7 @@ function NoteRows() {
 }
 
 function NoteForm() {
-  const dispatch = useAppDispatch();
-  let dates = ""
-  let createDate = ""
-
+  const dispatch = useAppDispatch()
   const [name, setName] = useState("")
   const [categoryName, setCategoryName] = useState(useAppSelector(state => {
     return state.notes.categoriesList[0].categoryName}))
@@ -182,35 +166,32 @@ function NoteForm() {
 
   return (
     <tr id="new-note">
-      <td><form id="note-form"></form></td>
+      <td></td>
       <td>
-        <input form="note-form" type="text" id="name" name="name" autoComplete="off"
+        <input type="text" name="name" autoComplete="off"
           value={name}
           onChange={(e) => { setName(e.target.value) }} />
       </td>
-      <td>{createDate}</td>
+      <td></td>
       <td>
-        <select name="category" form="note-form"
-          value={categoryName}
+        <select name="category" value={categoryName}
           onChange={(e) => { setCategoryName(e.target.value) }}>
           <CategoryOptions />
         </select>
       </td>
       <td>
-        <input form="note-form" type="text" name="content" autoComplete="off"
-          value={content}
+        <input type="text" name="content" autoComplete="off" value={content}
           onChange={(e) => { setContent(e.target.value) }} />
       </td>
-      <td>{dates}</td>
+      <td></td>
       <td>
-        <button form="note-form" type="button" className="add" title="Save Note"
+        <button type="button" className="add" title="Save Note"
           onClick={() => dispatch(add({ name: name, categoryName: categoryName, content: content }))}>
           <i className="fa-solid fa-check"></i>
         </button>
       </td>
       <td>
-        <button form="note-form" type="button" title="Discard Changes"
-          onClick={() => dispatch(hideCreateForm())}>
+        <button type="button" title="Discard Changes" onClick={() => dispatch(hideCreateForm())}>
           <i className="fa-solid fa-xmark"></i>
         </button>
       </td>
@@ -230,59 +211,47 @@ function CategoryOptions() {
   )
 }
 
+function EditNoteForm(note: Note) {
+  const dispatch = useAppDispatch()
+  const [name, setName] = useState(note.name)
+  const [categoryName, setCategoryName] = useState(note.category.categoryName)
+  const [content, setContent] = useState(note.content)
 
-// export function Counter() {
-//   const count = useAppSelector(selectCount);
-//   const dispatch = useAppDispatch();
-//   const [incrementAmount, setIncrementAmount] = useState('2');
-
-//   const incrementValue = Number(incrementAmount) || 0;
-
-//   return (
-//     <div>
-//       <div className={styles.row}>
-//         <button
-//           className={styles.button}
-//           aria-label="Decrement value"
-//           onClick={() => dispatch(decrement())}
-//         >
-//           -
-//         </button>
-//         <span className={styles.value}>{count}</span>
-//         <button
-//           className={styles.button}
-//           aria-label="Increment value"
-//           onClick={() => dispatch(increment())}
-//         >
-//           +
-//         </button>
-//       </div>
-//       <div className={styles.row}>
-//         <input
-//           className={styles.textbox}
-//           aria-label="Set increment amount"
-//           value={incrementAmount}
-//           onChange={(e) => setIncrementAmount(e.target.value)}
-//         />
-//         <button
-//           className={styles.button}
-//           onClick={() => dispatch(incrementByAmount(incrementValue))}
-//         >
-//           Add Amount
-//         </button>
-//         <button
-//           className={styles.asyncButton}
-//           onClick={() => dispatch(incrementAsync(incrementValue))}
-//         >
-//           Add Async
-//         </button>
-//         <button
-//           className={styles.button}
-//           onClick={() => dispatch(incrementIfOdd(incrementValue))}
-//         >
-//           Add If Odd
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
+  return (
+    <tr>
+      <td><CategoryIcon {...note.category} /></td>
+      <td>
+        <input type="text" name="name" autoComplete="off"
+          value={name}
+          onChange={(e) => { setName(e.target.value) }} />
+      </td>
+      <td>{noteService.formatDate(note.createDate)}</td>
+      <td>
+        <select name="category" value={categoryName}
+          onChange={(e) => { setCategoryName(e.target.value) }}>
+          <CategoryOptions />
+        </select>
+      </td>
+      <td>
+        <input type="text" name="content" autoComplete="off" value={content}
+          onChange={(e) => { setContent(e.target.value) }} />
+      </td>
+      <td>{noteService.extractDates(note)}</td>
+      <td>
+        <button type="button" className="add" title="Save Note"
+          onClick={() => dispatch(edit({
+            data: {name: name, categoryName: categoryName, content: content}, 
+            noteId: note.id}))}>
+          <i className="fa-solid fa-check"></i>
+        </button>
+      </td>
+      <td>
+        <button type="button" title="Discard Changes" 
+            onClick={() => dispatch(discardEditForm(note.id))}>
+          <i className="fa-solid fa-xmark"></i>
+        </button>
+      </td>
+      <td></td>
+    </tr>
+  )
+}

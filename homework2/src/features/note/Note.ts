@@ -21,6 +21,12 @@ export interface Note {
   editStatus: boolean
 }
 
+export interface CategoryStats {
+  category: Category,
+  active: number,
+  archived: number
+}
+
 function extractDates(note: Note): string {
   let stringDates = (note.content + note.name).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g)
   if (stringDates == null) {
@@ -99,9 +105,9 @@ let initialNotesList:Note[] = [
   {id: 3, name: "Read Books", createDate: new Date(), category: categoriesList[2], 
       content: "Do this in 19 11 2022 and in 16-10-2022", archivedStatus: false, editStatus: false},
   {id: 4, name: "Sell Books", createDate: new Date(), category: categoriesList[1],
-      content: "Never do this", archivedStatus: false, editStatus: false},
+      content: "Never do this", archivedStatus: false, editStatus: true},
   {id: 5, name: "Gym", createDate: new Date(), category: categoriesList[0], 
-      content: "Go to the gym in 19.10.2022", archivedStatus: false, editStatus: false}
+      content: "Go to the gym in 19.10.2022", archivedStatus: true, editStatus: false}
 ]
 
 
@@ -112,10 +118,24 @@ export let noteService = {
   formatDate: formatDate,
   validate: validate,
   cleanUpFormData: cleanUpFormData,
+  getCategoryStats: getCategoryStats,
   initialNotesList: initialNotesList,
   categoriesList: categoriesList
 }
 
+export function getCategoryStats(notes: Note[], category: Category):CategoryStats {
+  let categoryStats = { category: category, active: 0, archived: 0 }
+  notes.forEach(note => {
+    if (note.category.categoryName == category.categoryName) {
+      if (note.archivedStatus) {
+        categoryStats.archived++
+      } else {
+        categoryStats.active++
+      }
+    }
+  })
+  return categoryStats
+}
 
 // notesList: [
 //   {
@@ -141,15 +161,6 @@ export let noteService = {
 // ]
 
 // export interface Note {
-
-
-//       id: ++Note.previousId,
-//       name: data.name.trim(),
-//       createDate: new Date(),
-//       archivedStatus: false,
-//       content: data.content.trim(),
-//       category: { categoryName: data.categoryName.trim(), categoryIcon: "" },
-//       editStatus: false
 
 function validate(note: Note, categories: Category[]) {
   let errors = []
