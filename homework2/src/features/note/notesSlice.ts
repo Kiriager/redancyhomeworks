@@ -89,6 +89,14 @@ const noteSlice = createSlice({
         note.editStatus = false
         note.archivedStatus = action.payload
       })
+    },
+    removeAll: (state) => {
+      for (let i = 0; i < state.notesList.length; i++) {
+        if (state.notesList[i].archivedStatus == state.showArchiveNotes) {
+          state.notesList.splice(i, 1)
+          i--
+        } 
+      }
     }
   },
   
@@ -96,6 +104,6 @@ const noteSlice = createSlice({
 
 export const { add, edit, switchArchiveStatus, remove, switchTableArchiveStatus, 
   showCreateForm, hideCreateForm, discardEditForm, initiateEditNote, 
-  setAllNotesArchiveStatus} = noteSlice.actions
+  setAllNotesArchiveStatus, removeAll} = noteSlice.actions
 
 export default noteSlice.reducer;

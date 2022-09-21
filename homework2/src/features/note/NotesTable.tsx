@@ -4,7 +4,8 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import {
   switchArchiveStatus, remove, edit, switchTableArchiveStatus, 
-  showCreateForm, hideCreateForm, add, discardEditForm, initiateEditNote, setAllNotesArchiveStatus
+  showCreateForm, hideCreateForm, add, discardEditForm, initiateEditNote, 
+  setAllNotesArchiveStatus, removeAll
 } from './notesSlice';
 
 import styles from './Note.module.css';
@@ -32,7 +33,8 @@ export function NotesTable() {
             </button>
           </th>
           <th>
-            <button id="delete-table-all-notes" title="Delete All">
+            <button id="delete-table-all-notes" title="Delete All"
+              onClick={() => dispatch(removeAll())}>
               <i className="fa-solid fa-trash"></i>
             </button>
           </th>
