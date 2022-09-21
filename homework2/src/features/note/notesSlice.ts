@@ -14,7 +14,7 @@ const initialState: NotesState = {
   showArchiveNotes: false,
   showCreateForm: false,
   notesList: noteService.initialNotesList,
-  ids: 6
+  ids: 8
 }
 
 const noteSlice = createSlice({
@@ -62,7 +62,7 @@ const noteSlice = createSlice({
       }
     },
     switchTableArchiveStatus: (state) => {
-      state.notesList.map((note) => {note.editStatus = false})
+      state.notesList.forEach((note) => {note.editStatus = false})
       state.showArchiveNotes = !state.showArchiveNotes
       state.showCreateForm = false
     },
@@ -85,14 +85,14 @@ const noteSlice = createSlice({
       }
     },
     setAllNotesArchiveStatus: (state, action: PayloadAction<boolean>) => {
-      state.notesList.map((note) => {
+      state.notesList.forEach((note) => {
         note.editStatus = false
         note.archivedStatus = action.payload
       })
     },
     removeAll: (state) => {
       for (let i = 0; i < state.notesList.length; i++) {
-        if (state.notesList[i].archivedStatus == state.showArchiveNotes) {
+        if (state.notesList[i].archivedStatus === state.showArchiveNotes) {
           state.notesList.splice(i, 1)
           i--
         } 

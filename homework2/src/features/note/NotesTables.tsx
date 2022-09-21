@@ -8,15 +8,13 @@ import {
   setAllNotesArchiveStatus, removeAll
 } from './notesSlice';
 
-import styles from './Note.module.css';
-
 
 export function NotesTable() {
   const dispatch = useAppDispatch()
   const formStatus = useAppSelector(state => state.notes.showCreateForm)
   const tableArchiveStatus = useAppSelector(state => state.notes.showArchiveNotes)
   return (
-    <table className={styles.notes}>
+    <table className="notes">
       <thead>
         <tr>
           <th></th>
@@ -28,24 +26,20 @@ export function NotesTable() {
           <th></th>
           <th>
             <button id="archive-all-notes" title="Archive/Unarchaive All"
-            onClick={() => dispatch(setAllNotesArchiveStatus(!tableArchiveStatus))}>
+                onClick={() => dispatch(setAllNotesArchiveStatus(!tableArchiveStatus))}>
               <i className="fa-solid fa-box-archive"></i>
             </button>
           </th>
           <th>
             <button id="delete-table-all-notes" title="Delete All"
-              onClick={() => dispatch(removeAll())}>
+                  onClick={() => dispatch(removeAll())}>
               <i className="fa-solid fa-trash"></i>
             </button>
           </th>
         </tr>
       </thead>
-
       <NoteRows />
-
-      <tfoot>
-        {formStatus ? <NoteForm /> : !tableArchiveStatus ? <CreateNoteButton /> : ""}
-      </tfoot>
+      <tfoot>{formStatus ? <NoteForm /> : !tableArchiveStatus ? <CreateNoteButton /> : <></>}</tfoot>
     </table>
 
   )
@@ -54,12 +48,12 @@ export function NotesTable() {
 export function CreateNoteButton() {
   const dispatch = useAppDispatch()
   return (
-    <tr>
+    <tr><td colSpan={9} id="create-button-container">
       <button id="create-note-button" className="outside"
           onClick={() => dispatch(showCreateForm())}>
         Create Note
       </button>
-    </tr>
+    </td></tr>
   )
 }
 
@@ -80,11 +74,12 @@ export function StatsTable() {
   return (
     <table id="stats">
       <thead>
-        <tr> <th></th> <th>Note Category</th> <th>Active</th> <th>Archived</th> </tr>
+        <tr><th></th><th>Note Category</th><th>Active</th><th>Archived</th></tr>
       </thead>
       <tbody>
-        {categories.map((category) => {
-          return (<CategoryStatsRow {...noteService.getCategoryStats(notes, category)} />)
+        {categories.map((category, index) => {
+          return (<CategoryStatsRow 
+              {...noteService.getCategoryStats(notes, category)} key={"stats" + index}/>)
         })}
       </tbody>
     </table>
@@ -116,7 +111,7 @@ function SingleNote(note: Note) {
     <tr>
       <td><CategoryIcon {...note.category} /></td>
       <td>{note.name}</td>
-      <td>{noteService.formatDate(note.createDate)}</td>
+      <td>{noteService.printMyDate(note.createDate)}</td>
       <td>{note.category.categoryName}</td>
       <td>{note.content}</td>
       <td>{noteService.extractDates(note)}</td>
@@ -149,9 +144,9 @@ function NoteRows() {
     <tbody>
       {notes.filter((note) => { return note.archivedStatus === tableArchiveStatus }).map((note) => {
         if (note.editStatus) {
-          return (<EditNoteForm {...note}/>)
+          return (<EditNoteForm {...note} key={"note" + note.id}/>)
         } else {
-          return (<SingleNote {...note}/>)
+          return (<SingleNote {...note} key={"note" + note.id}/>)
         }
         })
       }
@@ -206,8 +201,8 @@ function CategoryOptions() {
   let categories = useAppSelector(state => state.notes.categoriesList)
   return (
     <>
-      {categories.map((category) => {
-        return(<option value={category.categoryName}>{category.categoryName}</option>)
+      {categories.map((category, index) => {
+        return(<option key={"cat" + index} value={category.categoryName}>{category.categoryName}</option>)
       })}
     </>
   )
@@ -227,7 +222,7 @@ function EditNoteForm(note: Note) {
           value={name}
           onChange={(e) => { setName(e.target.value) }} />
       </td>
-      <td>{noteService.formatDate(note.createDate)}</td>
+      <td>{noteService.printMyDate(note.createDate)}</td>
       <td>
         <select name="category" value={categoryName}
           onChange={(e) => { setCategoryName(e.target.value) }}>

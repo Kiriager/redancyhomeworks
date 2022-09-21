@@ -1,5 +1,3 @@
-import { cleanup } from "@testing-library/react"
-
 export interface NoteFormData {
   name: string,
   categoryName: string,
@@ -14,17 +12,31 @@ export interface Category {
 export interface Note {
   id: number,
   name: string,
-  createDate: Date,
+  createDate: MyDate,
   archivedStatus: boolean,
   content: string,
   category: Category,
   editStatus: boolean
 }
 
+export interface MyDate {
+  date: number,
+  month: number,
+  year: number
+}
+
 export interface CategoryStats {
   category: Category,
   active: number,
   archived: number
+}
+
+function parseDateToMyDate(date: Date):MyDate {
+  return {date: date.getDate(), month: date.getMonth(), year: date.getFullYear()}
+}
+
+function printMyDate(date: MyDate):string {
+  return date.date + "/" + date.month + "/" + date.year
 }
 
 function extractDates(note: Note): string {
@@ -50,7 +62,7 @@ function createNote(data: NoteFormData, noteId: number):Note {
   return {
     id: noteId,
     name: data.name,
-    createDate: new Date(),
+    createDate: parseDateToMyDate(new Date()),
     archivedStatus: false,
     content: data.content,
     category: { categoryName: data.categoryName, categoryIcon: "" },
@@ -98,16 +110,20 @@ const categoriesList = [
 ]
 
 let initialNotesList:Note[] = [
-  {id: 1, name: "Buy Books", createDate: new Date(), category: categoriesList[0], 
+  {id: 1, name: "Buy Books", createDate: parseDateToMyDate(new Date()), category: categoriesList[0], 
       content: "Do this in 19 11 2022 and in 16-10-2022",  archivedStatus: false, editStatus: false},
-  {id: 2, name: "Buy More Books", createDate: new Date(), category: categoriesList[1], 
+  {id: 2, name: "Buy More Books", createDate: parseDateToMyDate(new Date()), category: categoriesList[1], 
       content: "Do this in 19.11.2022 and in 16/10/2022", archivedStatus: false, editStatus: false},
-  {id: 3, name: "Read Books", createDate: new Date(), category: categoriesList[2], 
+  {id: 3, name: "Read Books", createDate: parseDateToMyDate(new Date()), category: categoriesList[2], 
       content: "Do this in 19 11 2022 and in 16-10-2022", archivedStatus: false, editStatus: false},
-  {id: 4, name: "Sell Books", createDate: new Date(), category: categoriesList[1],
-      content: "Never do this", archivedStatus: false, editStatus: true},
-  {id: 5, name: "Gym", createDate: new Date(), category: categoriesList[0], 
-      content: "Go to the gym in 19.10.2022", archivedStatus: true, editStatus: false}
+  {id: 4, name: "Sell Books", createDate: parseDateToMyDate(new Date()), category: categoriesList[1],
+      content: "Never do this", archivedStatus: false, editStatus: false},
+  {id: 5, name: "Gym", createDate: parseDateToMyDate(new Date()), category: categoriesList[0], 
+      content: "Go to the gym in 19.10.2022", archivedStatus: true, editStatus: false},
+  {id: 6, name: "Do HW2", createDate: parseDateToMyDate(new Date()), category: categoriesList[0], 
+      content: "Do hw2 before 20.09.2022", archivedStatus: false, editStatus: false},
+  {id: 7, name: "Do HW3", createDate: parseDateToMyDate(new Date()), category: categoriesList[0], 
+      content: "Do hw3 before 30.09.2022", archivedStatus: false, editStatus: false}
 ]
 
 
@@ -119,6 +135,7 @@ export let noteService = {
   validate: validate,
   cleanUpFormData: cleanUpFormData,
   getCategoryStats: getCategoryStats,
+  printMyDate: printMyDate,
   initialNotesList: initialNotesList,
   categoriesList: categoriesList
 }
@@ -126,7 +143,7 @@ export let noteService = {
 export function getCategoryStats(notes: Note[], category: Category):CategoryStats {
   let categoryStats = { category: category, active: 0, archived: 0 }
   notes.forEach(note => {
-    if (note.category.categoryName == category.categoryName) {
+    if (note.category.categoryName === category.categoryName) {
       if (note.archivedStatus) {
         categoryStats.archived++
       } else {
@@ -137,37 +154,12 @@ export function getCategoryStats(notes: Note[], category: Category):CategoryStat
   return categoryStats
 }
 
-// notesList: [
-//   {
-//     id: 1, name: "task1", createDate: new Date(), archivedStatus: false,
-//     content: "do task 1 in 19-11-2022",
-//     category: { categoryName: "Task", categoryIcon: "fa-solid fa-thumbtack" }, editStatus: false
-//   },
-//   {
-//     id: 2, name: "task2", createDate: new Date(), archivedStatus: false,
-//     content: "do task 2 in 19 11 2022 and in 16-10-2022",
-//     category: { categoryName: "Task", categoryIcon: "fa-solid fa-thumbtack" }, editStatus: false
-//   },
-//   {
-//     id: 3, name: "task3", createDate: new Date(), archivedStatus: false,
-//     content: "do task 3 in 19.11.2022 and in 16/10/2022",
-//     category: { categoryName: "Task", categoryIcon: "fa-solid fa-thumbtack" }, editStatus: false
-//   },
-//   {
-//     id: 4, name: "task4", createDate: new Date(), archivedStatus: true,
-//     content: "Just nice thought",
-//     category: { categoryName: "Random Thought", categoryIcon: "fa-solid fa-lightbulb" }, editStatus: false
-//   }
-// ]
-
-// export interface Note {
-
 function validate(note: Note, categories: Category[]) {
   let errors = []
-  if (note.name == "") {
+  if (note.name === "") {
     errors.push("Note name is required.")
   }
-  if (note.category.categoryName == "") {
+  if (note.category.categoryName === "") {
     errors.push("Note category is required.")
   }
   let category = categories.find((category) => {
@@ -178,7 +170,7 @@ function validate(note: Note, categories: Category[]) {
   } else {
     note.category = category
   }
-  if (note.content == "") {
+  if (note.content === "") {
     errors.push("Note content is required.")
   }
   return errors
