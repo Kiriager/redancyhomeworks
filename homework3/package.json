@@ -1,11 +1,20 @@
 {
-  "dependencies": {
-    "dotenv": "^16.0.2",
-    "express": "^4.18.1",
-    "nodemon": "^2.0.19",
-    "router": "^1.3.7"
-  },
+  "name": "homework3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "watch": "nodemon launch"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "go": "node launch.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.7.18",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.2"
   }
 }
