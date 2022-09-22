@@ -67,6 +67,10 @@ button.outside {
   width: 100%;
 }
 
+button.outside:hover {
+  text-shadow: #303030 2px 2px 2px;
+}
+
 #create-button-container {
   background-color: white;
   padding-left: 0px;
