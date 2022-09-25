@@ -126,8 +126,6 @@ let initialNotesList:Note[] = [
       content: "Do hw3 before 30.09.2022", archivedStatus: false, editStatus: false}
 ]
 
-
-
 export let noteService = {
   extractDates: extractDates,
   createNote: createNote,
