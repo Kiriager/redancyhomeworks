@@ -1,6 +1,7 @@
 const noteRpository = require("../repositories/NoteRepository")
 
-import { Category } from "./Category"
+import Category = require("./Category")
+
 
 
 export class Note {
@@ -10,17 +11,18 @@ export class Note {
   constructor(data: NoteFormData) {
     this.errors = []
     this.data = {
-      id: 1,
+      id: -1,
       title: data.title,
       createDate: new Date(),
       content: data.content,
       archiveStatus: false,
-      category: {
-        categoryName: "",
-        categoryIcon: "",
-        id: data.categoryId
-      }
+      categoryId: data.categoryId
     }
+  }
+
+  public static showAll() {
+    let notes = noteRpository.findAll()
+    return notes
   }
 
   create() {
@@ -67,6 +69,7 @@ export class Note {
     }
     return errors
   }
+
 }
 
 interface NoteFormData {
@@ -75,13 +78,13 @@ interface NoteFormData {
   categoryId: number
 }
 
-interface NoteData {
+export interface NoteData {
   id: number
   title: string
   createDate: Date
   content: string
   archiveStatus: boolean
-  category: Category
+  categoryId: number
 }
 
 interface NoteDto {

@@ -1,9 +1,9 @@
 //import express from 'express'
 
-const express = require('express')
+import express = require('express')
 const app = express()
 
-const router = require('./routes/router')
+import router = require('./routes/router')
 
 app.use(express.urlencoded({extended:false}))
 app.use(express.json())

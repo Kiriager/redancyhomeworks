@@ -1,11 +1,13 @@
-import express = require("express")
+import express = require('express')
 const router = express.Router()
 
-//const controller = require('./controller')
+import noteService = require('../services/noteService')
 
 //router.get('/', controller.home)
 router.get('/', (req, res) => {
   res.json({message: 'hello'})
 })
 
-module.exports = router
+router.get('/notes', noteService.getAll)
+
+export = router
