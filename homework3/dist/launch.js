@@ -1,5 +1,6 @@
 "use strict";
-const dotenv = require('dotenv');
+Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv = require("dotenv");
 dotenv.config();
 function start() {
     const app = require('./App');

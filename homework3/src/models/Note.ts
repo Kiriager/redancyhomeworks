@@ -1,10 +1,8 @@
-const noteRpository = require("../repositories/NoteRepository")
-
+import noteRpository = require("../repositories/NoteRepository")
 import Category = require("./Category")
 
-
-
 export class Note {
+  
   data: NoteData
   errors: string[]
 
@@ -20,9 +18,15 @@ export class Note {
     }
   }
 
-  public static showAll() {
-    let notes = noteRpository.findAll()
-    return notes
+  public static showAll():Promise<NoteData[]> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let notes = await noteRpository.findAll()
+        resolve(notes)
+      } catch (error) {
+        reject(error)
+      }  
+    })
   }
 
   create() {
