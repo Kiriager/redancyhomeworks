@@ -73,10 +73,19 @@ export let setSingleNoteArchiveStatus = async function(req: express.Request, res
 export let setAllNotesArchiveStatus = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
   try { 
-    await noteService.setNotesArchiveStatus(req.body)
+    await noteService.setAllNotesArchiveStatus(req.body)
     res.status(204).send()
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }
 }
 
+export let deleteAllNotes = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json')
+  try { 
+    await noteService.deleteAllNotesWithStatus(req.body)
+    res.status(204).send()
+  } catch (errors) {
+    res.status(400).send(JSON.stringify({errors}))
+  }
+}

@@ -37,6 +37,15 @@ class NoteRepository {
     })
   }
 
+  deleteAllByStatus(archiveStatus: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      db.notesCollection = db.notesCollection.filter((n) => {
+        return n.archiveStatus != archiveStatus
+      })
+      resolve()
+    })
+  }
+
   insertOne(data: NoteData): Promise<number> {
     return new Promise((resolve, reject) => {
       data.id = db.idGenerator++

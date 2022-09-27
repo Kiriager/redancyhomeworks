@@ -91,7 +91,7 @@ export let setNoteArchiveStatus = function (id:number, archiveStatus: boolean): 
   })
 }
 
-export let setNotesArchiveStatus = function (archiveStatus: boolean): Promise<void> {  
+export let setAllNotesArchiveStatus = function (archiveStatus: boolean): Promise<void> {  
   return new Promise(async (resolve, reject) => {
     try {     
       let notes = await noteRpository.findAll()
@@ -103,6 +103,19 @@ export let setNotesArchiveStatus = function (archiveStatus: boolean): Promise<vo
     }
   })
 }
+
+export let deleteAllNotesWithStatus = function (archiveStatus: boolean): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await noteRpository.deleteAllByStatus(archiveStatus)
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+
 
 let validateNote = async function (data: NoteData): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -124,38 +137,3 @@ let validateNote = async function (data: NoteData): Promise<void> {
   })
 }
 
-
-
-// function toDto(note: Note):NoteDto {
-//   let category = Category.findAll()
-
-//   return {
-//     id: note.data.id,
-//     title: note.data.title,
-//     createDate: note.data.createDate,
-//     archiveStatus: note.data.archiveStatus,
-//     content: note.data.content,
-//     category: category
-//   }
-// }
-
-
-// try {
-//   let note = await Note.showSingleNote(parseInt(req.params.id))
-//   let category = await Category.findOneById(5)
-//   //let category = await Category.findOneById(note.categoryId)
-
-//   // let dtos = notes.map((note) => {
-//   //   let category = categories[note.categoryId + 1]
-//   //   return toDto(note, category)
-//   // })
-//   res.append('Content-Type', 'application/json')
-//   res.status(200).send(JSON.stringify({ note: toDto(note, category) }))
-// } catch (error) {
-//   res.append('Content-Type', 'application/json')
-//   if (error === "404") {
-//     res.status(404).send(JSON.stringify({ message: "Note doesn't exist." }))
-//   } else {
-//     res.status(500).send(JSON.stringify({ error: error }))
-//   }
-// }
