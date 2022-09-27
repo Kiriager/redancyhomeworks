@@ -1,19 +1,22 @@
 import express = require('express')
 import Category = require('../models/Category')
 import { toDto } from '../helpers/mapper';
-import { Note } from '../models/Note';
+import { Note, NoteData, NoteFormData } from '../models/Note';
 import noteRpository = require("../repositories/NoteRepository")
 import categoryRpository = require("../repositories/CategoryRepository")
 import { NoteDto } from '../models/NoteDto';
 //const Note = require("../models/Note")
 
-export let getAllNotes = async function (): Promise<NoteDto[]> {
+export let getAllNotes = function (): Promise<NoteDto[]> {
   return new Promise(async (resolve, reject) => {
     try {
       let categories = await categoryRpository.findAll()
       let notes = await noteRpository.findAll()
       let dtos = notes.map((note) => {
-        let category = categories[note.categoryId + 1]
+        let category = categories.find((c) => {return c.id == note.categoryId})
+        if (!category) {
+          category = { id: 0, categoryName: "Uncategorized", categoryIcon: "" }
+        }
         return toDto(note, category)
       })
       resolve(dtos)
@@ -23,11 +26,37 @@ export let getAllNotes = async function (): Promise<NoteDto[]> {
   })
 }
 
-export let getNote = async function (id: number): Promise<NoteDto> {
+export let getNote = function (id: number): Promise<NoteDto> {
   return new Promise(async (resolve, reject) => {
     try {
       let note = await noteRpository.findOneById(id)
-      let category = await categoryRpository.findOneById(note.categoryId)
+      let category = { id: 0, categoryName: "Uncategorized", categoryIcon: "" }
+      categoryRpository.findOneById(note.categoryId).then((c) => {category = c})
+      resolve(toDto(note, category))
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export let deleteNote = function (id: number): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await noteRpository.deleteOneById(id)
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export let addNote = function (data: NoteFormData): Promise<NoteDto> {  
+  return new Promise(async (resolve, reject) => {
+    let note = new Note(data)
+    try {
+      await validateNote(note)
+      let category = await categoryRpository.findOneById(data.categoryId)
+      await noteRpository.insertOne(note)
       resolve(toDto(note, category))
     } catch (error) {
       reject(error)
@@ -36,16 +65,26 @@ export let getNote = async function (id: number): Promise<NoteDto> {
 }
 
 
-export let deleteNote = async function(id: number):Promise<void> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await noteRpository.deleteOneById(id)
-      resolve() 
-    } catch (error) {
-      reject(error)
+let validateNote = async function (data: NoteData): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let errors = new Array<string>
+    if (data.title === "") {
+      errors.push("Note title is required.")
+    }
+    if (data.content === "") {
+      errors.push("Note content is required.")
+    }
+    categoryRpository.findOneById(data.categoryId).then().catch((error) => { 
+      errors.push(error) 
+    })
+    if (!errors.length) {
+      resolve()
+    } else {
+      reject(errors)
     }
   })
 }
+
 
 // function toDto(note: Note):NoteDto {
 //   let category = Category.findAll()

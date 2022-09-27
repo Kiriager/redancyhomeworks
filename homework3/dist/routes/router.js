@@ -1,15 +1,16 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const noteService = require("../services/noteService");
-//router.get('/', controller.home)
+const noteController = require("../controllers/noteController");
 router.get('/', (req, res) => {
     res.json({ message: 'hello' });
 });
-// router.get('/notes/:id', (req, res) => {
-//   res.json({message: 'hello width param'})
+// router.post('/notes', (req, res) => {
+//   res.json({message: res})
 // })
-router.get('/notes', noteService.getAll);
-router.get('/notes/:id', noteService.getNote);
+router.post('/notes', noteController.createNote);
+router.get('/notes', noteController.showAllNotes);
+router.get('/notes/:id', noteController.showSingleNote);
+router.delete('/notes/:id', noteController.deleteSingleNote);
 module.exports = router;
 //# sourceMappingURL=router.js.map

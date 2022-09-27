@@ -33,7 +33,7 @@ export let showSingleNote = async function(req: express.Request, res: express.Re
   }
 }
 
-export let deleteNote = async function(req: express.Request, res: express.Response) {
+export let deleteSingleNote = async function(req: express.Request, res: express.Response) {
   try {
     await noteService.deleteNote(parseInt(req.params.id))
     res.append('Content-Type', 'application/json')
@@ -45,5 +45,15 @@ export let deleteNote = async function(req: express.Request, res: express.Respon
     } else {
       res.status(500).send(JSON.stringify({error: error}))
     }
+  }
+}
+
+export let createNote = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json')
+  try {
+    await noteService.addNote(req.body)
+    res.status(204).send()
+  } catch (errors) {
+    res.status(400).send(JSON.stringify({errors}))
   }
 }

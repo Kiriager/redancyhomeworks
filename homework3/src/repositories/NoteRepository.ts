@@ -37,20 +37,12 @@ class NoteRepository {
     })
   }
 
-  insertOne(data: NoteData) {
-    data.id = db.idGenerator++
-    db.notesCollection.push(data)
-  }
-}
-
-function toDto(note: Note, category: Category) {
-  return {
-    id: note.data.id,
-    title: note.data.title,
-    createDate: note.data.createDate,
-    archiveStatus: note.data.archiveStatus,
-    content: note.data.content,
-    category: category
+  insertOne(data: NoteData): Promise<NoteData> {
+    return new Promise((resolve, reject) => {
+      data.id = db.idGenerator++
+      db.notesCollection.push(data)
+      resolve(data)
+    }) 
   }
 }
 

@@ -1,75 +1,40 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Note = void 0;
-const noteRpository = require("../repositories/NoteRepository");
 class Note {
     constructor(data) {
-        this.errors = [];
-        this.data = {
-            id: -1,
-            title: data.title,
-            createDate: new Date(),
-            content: data.content,
-            archiveStatus: false,
-            categoryId: data.categoryId
-        };
+        this.id = -1;
+        this.title = data.title;
+        this.createDate = new Date();
+        this.content = data.content;
+        this.archiveStatus = false;
+        this.categoryId = data.categoryId;
+        this.cleanUp();
     }
-    static showAll() {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let notes = yield noteRpository.findAll();
-                resolve(notes);
-            }
-            catch (error) {
-                reject(error);
-            }
-        }));
-    }
-    static showSinleNote(id) {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let note = yield noteRpository.findOneById(id);
-                resolve(note);
-            }
-            catch (error) {
-                reject(error);
-            }
-        }));
-    }
-    create() {
-        return new Promise((resolve, reject) => {
-            this.cleanUp();
-            this.validate();
-            if (!this.errors.length) {
-                resolve();
-                // noteRpository.insertOne(this.data).then(() => {
-                //   resolve()
-                // }).catch(() => {
-                //   this.errors.push("please try again later")
-                //   reject(this.errors)
-                // })
-            }
-            else {
-                reject(this.errors);
-            }
-        });
-    }
+    // create() {
+    //   return new Promise<void>((resolve, reject) => {
+    //     this.cleanUp()
+    //     this.validate()
+    //     if (!this.errors.length) {
+    //       resolve()
+    //       // noteRpository.insertOne(this.data).then(() => {
+    //       //   resolve()
+    //       // }).catch(() => {
+    //       //   this.errors.push("please try again later")
+    //       //   reject(this.errors)
+    //       // })
+    //     } else {
+    //       reject(this.errors)
+    //     }
+    //   })
+    // }
     cleanUp() {
-        this.data.title = this.data.title.trim();
-        this.data.content = this.data.content.trim();
+        this.title = this.title.trim();
+        this.content = this.content.trim();
     }
     validate() {
         let errors = [];
-        if (this.data.title === "") {
+        if (this.title === "") {
             errors.push("Note title is required.");
         }
         // if (note.category.categoryName === "") {
@@ -83,7 +48,7 @@ class Note {
         // } else {
         //   note.category = category
         // }
-        if (this.data.content === "") {
+        if (this.content === "") {
             errors.push("Note content is required.");
         }
         return errors;

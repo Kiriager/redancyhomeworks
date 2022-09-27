@@ -20,20 +20,27 @@ class NoteRepository {
             }
         });
     }
-    insertOne(data) {
-        data.id = db_1.db.idGenerator++;
-        db_1.db.notesCollection.push(data);
+    deleteOneById(id) {
+        return new Promise((resolve, reject) => {
+            let noteIndex = db_1.db.notesCollection.findIndex((n) => {
+                return n.id == id;
+            });
+            if (noteIndex >= 0) {
+                db_1.db.notesCollection.splice(noteIndex, 1);
+                resolve();
+            }
+            else {
+                reject("404");
+            }
+        });
     }
-}
-function toDto(note, category) {
-    return {
-        id: note.data.id,
-        title: note.data.title,
-        createDate: note.data.createDate,
-        archiveStatus: note.data.archiveStatus,
-        content: note.data.content,
-        category: category
-    };
+    insertOne(data) {
+        return new Promise((resolve, reject) => {
+            data.id = db_1.db.idGenerator++;
+            db_1.db.notesCollection.push(data);
+            resolve(data);
+        });
+    }
 }
 module.exports = new NoteRepository();
 //# sourceMappingURL=NoteRepository.js.map

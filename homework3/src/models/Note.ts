@@ -2,48 +2,50 @@ import noteRpository = require("../repositories/NoteRepository")
 import Category = require("./Category")
 
 export class Note {
-  
-  data: NoteData
-  errors: string[]
+  id: number
+  title: string
+  createDate: Date
+  content: string
+  archiveStatus: boolean
+  categoryId: number
+
 
   constructor(data: NoteFormData) {
-    this.errors = []
-    this.data = {
-      id: -1,
-      title: data.title,
-      createDate: new Date(),
-      content: data.content,
-      archiveStatus: false,
-      categoryId: data.categoryId
-    }
+    this.id = -1
+    this.title = data.title
+    this.createDate = new Date()
+    this.content = data.content
+    this.archiveStatus = false
+    this.categoryId = data.categoryId
+    this.cleanUp()
   }
 
-  create() {
-    return new Promise<void>((resolve, reject) => {
-      this.cleanUp()
-      this.validate()
-      if (!this.errors.length) {
-        resolve()
-        // noteRpository.insertOne(this.data).then(() => {
-        //   resolve()
-        // }).catch(() => {
-        //   this.errors.push("please try again later")
-        //   reject(this.errors)
-        // })
-      } else {
-        reject(this.errors)
-      }
-    })
-  }
+  // create() {
+  //   return new Promise<void>((resolve, reject) => {
+  //     this.cleanUp()
+  //     this.validate()
+  //     if (!this.errors.length) {
+  //       resolve()
+  //       // noteRpository.insertOne(this.data).then(() => {
+  //       //   resolve()
+  //       // }).catch(() => {
+  //       //   this.errors.push("please try again later")
+  //       //   reject(this.errors)
+  //       // })
+  //     } else {
+  //       reject(this.errors)
+  //     }
+  //   })
+  // }
 
   cleanUp() {
-    this.data.title = this.data.title.trim()
-    this.data.content = this.data.content.trim()
+    this.title = this.title.trim()
+    this.content = this.content.trim()
   }
 
   validate() {
     let errors = []
-    if (this.data.title === "") {
+    if (this.title === "") {
       errors.push("Note title is required.")
     }
     // if (note.category.categoryName === "") {
@@ -57,7 +59,7 @@ export class Note {
     // } else {
     //   note.category = category
     // }
-    if (this.data.content === "") {
+    if (this.content === "") {
       errors.push("Note content is required.")
     }
     return errors
@@ -65,7 +67,7 @@ export class Note {
 
 }
 
-interface NoteFormData {
+export interface NoteFormData {
   title: string
   content: string
   categoryId: number
