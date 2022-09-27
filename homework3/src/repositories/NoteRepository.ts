@@ -44,6 +44,27 @@ class NoteRepository {
       resolve(data.id)
     }) 
   }
+
+  findAndUpdate(data: NoteData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let noteIndex = db.notesCollection.findIndex((note) => {
+        return note.id === data.id
+      })
+      if (noteIndex >= 0) {
+        db.notesCollection[noteIndex] = data
+        resolve()
+      } else {
+        reject("404")
+      }
+    }) 
+  }
+
+  updateAll(notes: NoteData[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      db.notesCollection = notes
+      resolve()
+    })
+  }
 }
 
 export = new NoteRepository()

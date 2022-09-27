@@ -4,9 +4,6 @@ import { toDto } from '../helpers/mapper';
 import { Note } from '../models/Note';
 import noteService = require('../services/noteService')
 
-
-//const Note = require("../models/Note")
-
 export let showAllNotes = async function(req: express.Request, res:express.Response) {
   res.append('Content-Type', 'application/json')
   try {
@@ -45,11 +42,41 @@ export let deleteSingleNote = async function(req: express.Request, res: express.
 
 export let createNote = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
-  try {
-    let noteId = await noteService.addNote(req.body)
-    res.location("/notes/:" + noteId)
+  try { 
+    res.location("/notes/:" + await noteService.addNote(req.body))
     res.status(201).send("Note has been created.")
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }
 }
+
+export let editNote = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json')
+  try { 
+    await noteService.updateNote(parseInt(req.params.id), req.body)
+    res.status(204).send()
+  } catch (errors) {
+    res.status(400).send(JSON.stringify({errors}))
+  }
+}
+
+export let setSingleNoteArchiveStatus = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json')
+  try { 
+    await noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body)
+    res.status(204).send()
+  } catch (errors) {
+    res.status(400).send(JSON.stringify({errors}))
+  }
+}
+
+export let setAllNotesArchiveStatus = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json')
+  try { 
+    await noteService.setNotesArchiveStatus(req.body)
+    res.status(204).send()
+  } catch (errors) {
+    res.status(400).send(JSON.stringify({errors}))
+  }
+}
+

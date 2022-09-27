@@ -15,5 +15,9 @@ router.post('/notes', noteController.createNote)
 router.get('/notes', noteController.showAllNotes)
 router.get('/notes/:id', noteController.showSingleNote)
 router.delete('/notes/:id', noteController.deleteSingleNote)
+router.patch('/notes/:id', noteController.editNote)
+router.patch('/notes/:id/archive', noteController.setSingleNoteArchiveStatus)
+router.patch('/notes/archive', noteController.setAllNotesArchiveStatus)
+
 
 export = router

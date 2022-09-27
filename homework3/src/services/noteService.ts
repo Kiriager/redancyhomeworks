@@ -62,6 +62,47 @@ export let addNote = function (data: NoteFormData): Promise<number> {
   })
 }
 
+export let updateNote = function (id:number, data: NoteFormData): Promise<void> {  
+  return new Promise(async (resolve, reject) => {
+    try {
+      let note = await noteRpository.findOneById(id)
+      note.title = data.title
+      note.content = data.content
+      note.categoryId = data.categoryId
+      await validateNote(note)
+      await noteRpository.findAndUpdate(note)
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export let setNoteArchiveStatus = function (id:number, archiveStatus: boolean): Promise<void> {  
+  return new Promise(async (resolve, reject) => {
+    try {
+      let note = await noteRpository.findOneById(id)
+      note.archiveStatus = archiveStatus
+      await noteRpository.findAndUpdate(note)
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export let setNotesArchiveStatus = function (archiveStatus: boolean): Promise<void> {  
+  return new Promise(async (resolve, reject) => {
+    try {     
+      let notes = await noteRpository.findAll()
+      notes.map((note) => {note.archiveStatus = archiveStatus})
+      await noteRpository.updateAll(notes)
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 let validateNote = async function (data: NoteData): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -82,6 +123,7 @@ let validateNote = async function (data: NoteData): Promise<void> {
     }
   })
 }
+
 
 
 // function toDto(note: Note):NoteDto {
