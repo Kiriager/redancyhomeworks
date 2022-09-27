@@ -37,11 +37,11 @@ class NoteRepository {
     })
   }
 
-  insertOne(data: NoteData): Promise<NoteData> {
+  insertOne(data: NoteData): Promise<number> {
     return new Promise((resolve, reject) => {
       data.id = db.idGenerator++
       db.notesCollection.push(data)
-      resolve(data)
+      resolve(data.id)
     }) 
   }
 }

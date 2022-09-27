@@ -38,7 +38,7 @@ class NoteRepository {
         return new Promise((resolve, reject) => {
             data.id = db_1.db.idGenerator++;
             db_1.db.notesCollection.push(data);
-            resolve(data);
+            resolve(data.id);
         });
     }
 }

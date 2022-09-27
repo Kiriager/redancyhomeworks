@@ -31,7 +31,7 @@ export let getNote = function (id: number): Promise<NoteDto> {
     try {
       let note = await noteRpository.findOneById(id)
       let category = { id: 0, categoryName: "Uncategorized", categoryIcon: "" }
-      categoryRpository.findOneById(note.categoryId).then((c) => {category = c})
+      await categoryRpository.findOneById(note.categoryId).then((c) => {category = c})
       resolve(toDto(note, category))
     } catch (error) {
       reject(error)
@@ -50,14 +50,12 @@ export let deleteNote = function (id: number): Promise<void> {
   })
 }
 
-export let addNote = function (data: NoteFormData): Promise<NoteDto> {  
+export let addNote = function (data: NoteFormData): Promise<number> {  
   return new Promise(async (resolve, reject) => {
     let note = new Note(data)
     try {
       await validateNote(note)
-      let category = await categoryRpository.findOneById(data.categoryId)
-      await noteRpository.insertOne(note)
-      resolve(toDto(note, category))
+      resolve(await noteRpository.insertOne(note))
     } catch (error) {
       reject(error)
     }

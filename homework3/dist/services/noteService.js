@@ -21,7 +21,10 @@ let getAllNotes = function () {
             let categories = yield categoryRpository.findAll();
             let notes = yield noteRpository.findAll();
             let dtos = notes.map((note) => {
-                let category = categories[note.categoryId + 1];
+                let category = categories.find((c) => { return c.id == note.categoryId; });
+                if (!category) {
+                    category = { id: 0, categoryName: "Uncategorized", categoryIcon: "" };
+                }
                 return (0, mapper_1.toDto)(note, category);
             });
             resolve(dtos);
@@ -36,7 +39,8 @@ let getNote = function (id) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         try {
             let note = yield noteRpository.findOneById(id);
-            let category = yield categoryRpository.findOneById(note.categoryId);
+            let category = { id: 0, categoryName: "Uncategorized", categoryIcon: "" };
+            yield categoryRpository.findOneById(note.categoryId).then((c) => { category = c; });
             resolve((0, mapper_1.toDto)(note, category));
         }
         catch (error) {
@@ -58,14 +62,11 @@ let deleteNote = function (id) {
 };
 exports.deleteNote = deleteNote;
 let addNote = function (data) {
-    console.log(data);
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         let note = new Note_1.Note(data);
         try {
             yield validateNote(note);
-            let category = yield categoryRpository.findOneById(data.categoryId);
-            yield noteRpository.insertOne(note);
-            resolve((0, mapper_1.toDto)(note, category));
+            resolve(yield noteRpository.insertOne(note));
         }
         catch (error) {
             reject(error);
