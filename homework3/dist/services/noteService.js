@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAll = void 0;
+exports.getNote = exports.getAll = void 0;
 const Category = require("../models/Category");
 const mapper_1 = require("../helpers/mapper");
 const Note_1 = require("../models/Note");
@@ -20,18 +20,44 @@ let getAll = function (req, res) {
             let categories = yield Category.findAll();
             let notes = yield Note_1.Note.showAll();
             let dtos = notes.map((note) => {
-                let category = categories[note.categoryId];
+                let category = categories[note.categoryId + 1];
                 return (0, mapper_1.toDto)(note, category);
             });
-            res.json(dtos);
+            res.append('Content-Type', 'application/json');
+            res.status(200).send(JSON.stringify({ notes: dtos }));
         }
         catch (error) {
-            res.json({ error: error });
+            res.append('Content-Type', 'application/json');
+            res.status(500).send(JSON.stringify({ error: error }));
         }
-        //res.json({message: "notes should be here"})
     });
 };
 exports.getAll = getAll;
+let getNote = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let note = yield Note_1.Note.showSinleNote(parseInt(req.params.id));
+            let category = yield Category.findOneById(5);
+            //let category = await Category.findOneById(note.categoryId)
+            // let dtos = notes.map((note) => {
+            //   let category = categories[note.categoryId + 1]
+            //   return toDto(note, category)
+            // })
+            res.append('Content-Type', 'application/json');
+            res.status(200).send(JSON.stringify({ note: (0, mapper_1.toDto)(note, category) }));
+        }
+        catch (error) {
+            res.append('Content-Type', 'application/json');
+            if (error === "404") {
+                res.status(404).send(JSON.stringify({ message: "Note doesn't exist." }));
+            }
+            else {
+                res.status(500).send(JSON.stringify({ error: error }));
+            }
+        }
+    });
+};
+exports.getNote = getNote;
 // function toDto(note: Note):NoteDto {
 //   let category = Category.findAll()
 //   return {

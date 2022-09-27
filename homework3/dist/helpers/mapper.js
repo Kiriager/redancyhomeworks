@@ -21,6 +21,28 @@ function convertStringToDate(stringDate) {
     let numberDayMonthYear = stringDayMonthYear.map((value) => { return parseInt(value); });
     return new Date(...formatDateNumbers(numberDayMonthYear));
 }
+// function stringifyDatesList(dates: Date[]) {
+//   if (dates == null || !dates.length) {
+//     return ""
+//   }
+//   return dates.map((date) => {
+//     return formatDate(date)
+//   }).join(", ")
+// }
+// function formatDate(date: Date) {
+//   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+// }
+function extractDates(note) {
+    let stringDates = (note.content
+        + note.title).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g);
+    if (stringDates == null) {
+        return [];
+    }
+    let dates = stringDates.map((date) => {
+        return convertStringToDate(date);
+    });
+    return dates;
+}
 function formatDateNumbers(numbers) {
     let month = numbers[1];
     let day = numbers[0];
@@ -30,27 +52,5 @@ function formatDateNumbers(numbers) {
     }
     const result = [numbers[2], month - 1, day];
     return result;
-}
-function stringifyDatesList(dates) {
-    if (dates == null || !dates.length) {
-        return "";
-    }
-    return dates.map((date) => {
-        return formatDate(date);
-    }).join(", ");
-}
-function formatDate(date) {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-}
-function extractDates(note) {
-    let stringDates = (note.content
-        + note.title).match(/[0-9]{1,2}([\-/ \.])[0-9]{1,2}[\-/ \.][0-9]{4}/g);
-    if (stringDates == null) {
-        return "";
-    }
-    let dates = stringDates.map((date) => {
-        return convertStringToDate(date);
-    });
-    return stringifyDatesList(dates);
 }
 //# sourceMappingURL=mapper.js.map

@@ -18,17 +18,6 @@ export class Note {
     }
   }
 
-  public static showAll():Promise<NoteData[]> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let notes = await noteRpository.findAll()
-        resolve(notes)
-      } catch (error) {
-        reject(error)
-      }  
-    })
-  }
-
   create() {
     return new Promise<void>((resolve, reject) => {
       this.cleanUp()

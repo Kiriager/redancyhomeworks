@@ -6,7 +6,7 @@ export interface Category {
   categoryIcon: string
 }
 
-export function findOneById(id:number) {
+export function findOneById(id:number):Promise<Category> {
   return new Promise ((resolve, reject) => {
     CategoryRepository.findOneById(id).then((category) => {
       resolve(category)

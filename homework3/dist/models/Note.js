@@ -34,6 +34,17 @@ class Note {
             }
         }));
     }
+    static showSinleNote(id) {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let note = yield noteRpository.findOneById(id);
+                resolve(note);
+            }
+            catch (error) {
+                reject(error);
+            }
+        }));
+    }
     create() {
         return new Promise((resolve, reject) => {
             this.cleanUp();

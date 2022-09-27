@@ -9,13 +9,13 @@ class CategoryRepository {
     })
   }
 
-  findOneById(id: number) {
+  findOneById(id: number):Promise<Category> {
     return new Promise((resolve, reject) => {
       let category = db.categoriesCollection.find((category) => {return category.id === id})
-      if (typeof(category) == 'undefined') {
-        resolve(category)
-      } else {
+      if (!category) {
         reject("Category doesn't exist.")
+      } else {
+        resolve(category)
       }
     })
   }

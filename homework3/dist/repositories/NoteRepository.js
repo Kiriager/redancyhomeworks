@@ -7,6 +7,19 @@ class NoteRepository {
             resolve(db_1.db.notesCollection);
         });
     }
+    findOneById(id) {
+        return new Promise((resolve, reject) => {
+            let note = db_1.db.notesCollection.find((n) => {
+                return n.id == id;
+            });
+            if (note) {
+                resolve(note);
+            }
+            else {
+                reject("404");
+            }
+        });
+    }
     insertOne(data) {
         data.id = db_1.db.idGenerator++;
         db_1.db.notesCollection.push(data);
