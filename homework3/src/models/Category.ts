@@ -6,6 +6,12 @@ export interface Category {
   categoryIcon: string
 }
 
+export interface CategoryStats {
+  category: Category,
+  active: number,
+  archived: number
+}
+
 export function findOneById(id: number): Promise<Category> {
   return new Promise((resolve, reject) => {
     CategoryRepository.findOneById(id).then((category) => {

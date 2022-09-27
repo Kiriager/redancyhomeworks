@@ -89,3 +89,13 @@ export let deleteAllNotes = async function(req: express.Request, res: express.Re
     res.status(400).send(JSON.stringify({errors}))
   }
 }
+
+export let showStats = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json')
+  try { 
+    res.status(200).send(JSON.stringify(await noteService.getCategoriesStats()))
+  } catch (errors) {
+    res.status(400).send(JSON.stringify({errors}))
+  }
+}
+

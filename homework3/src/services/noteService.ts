@@ -1,7 +1,7 @@
 import express = require('express')
-import Category = require('../models/Category')
-import { toDto } from '../helpers/mapper';
-import { Note, NoteData, NoteFormData } from '../models/Note';
+import { Category, CategoryStats } from '../models/Category'
+import { toDto } from '../helpers/mapper'
+import { Note, NoteData, NoteFormData } from '../models/Note'
 import noteRpository = require("../repositories/NoteRepository")
 import categoryRpository = require("../repositories/CategoryRepository")
 import { NoteDto } from '../models/NoteDto';
@@ -104,7 +104,7 @@ export let setAllNotesArchiveStatus = function (archiveStatus: boolean): Promise
   })
 }
 
-export let deleteAllNotesWithStatus = function (archiveStatus: boolean): Promise<void> {
+export let deleteAllNotesWithStatus = function(archiveStatus: boolean): Promise<void> {
   return new Promise(async (resolve, reject) => {
     try {
       await noteRpository.deleteAllByStatus(archiveStatus)
@@ -115,7 +115,20 @@ export let deleteAllNotesWithStatus = function (archiveStatus: boolean): Promise
   })
 }
 
-
+export let getCategoriesStats = function():Promise<CategoryStats[]> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let categories = await categoryRpository.findAll()
+      let notes = await noteRpository.findAll()
+      let stats = categories.map((c) => {
+        return getCategoryStats(notes, c)
+      })      
+      resolve(stats)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 let validateNote = async function (data: NoteData): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -137,3 +150,16 @@ let validateNote = async function (data: NoteData): Promise<void> {
   })
 }
 
+function getCategoryStats(notes: NoteData[], category: Category):CategoryStats {
+  let categoryStats = { category: category, active: 0, archived: 0 }
+  notes.forEach(note => {
+    if (note.categoryId === category.id) {
+      if (note.archiveStatus) {
+        categoryStats.archived++
+      } else {
+        categoryStats.active++
+      }
+    }
+  })
+  return categoryStats
+}

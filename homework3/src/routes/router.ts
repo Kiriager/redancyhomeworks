@@ -12,10 +12,14 @@ router.get('/', (req, res) => {
 // })
 
 router.post('/notes', noteController.createNote)
+
 router.get('/notes', noteController.showAllNotes)
 router.get('/notes/:id', noteController.showSingleNote)
+router.get('/notes/stats', noteController.showStats)
+
 router.delete('/notes/:id', noteController.deleteSingleNote)
 router.delete('/notes', noteController.deleteAllNotes)
+
 router.patch('/notes/:id', noteController.editNote)
 router.patch('/notes/:id/archive', noteController.setSingleNoteArchiveStatus)
 router.patch('/notes/archive', noteController.setAllNotesArchiveStatus)
