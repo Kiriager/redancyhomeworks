@@ -88,11 +88,21 @@ let setSingleArchiveStatus = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
-            yield noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus);
-            res.status(204).send();
+            if (typeof (req.body.archiveStatus) != "boolean") {
+                res.status(400).send(JSON.stringify({ error: "Invalid request body." }));
+            }
+            else {
+                yield noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus);
+                res.status(204).send();
+            }
         }
-        catch (errors) {
-            res.status(400).send(JSON.stringify({ errors }));
+        catch (error) {
+            if (error === "404") {
+                res.status(404).send(JSON.stringify({ message: "Note doesn't exist." }));
+            }
+            else {
+                res.status(500).send(JSON.stringify({ error: error }));
+            }
         }
     });
 };
@@ -101,8 +111,13 @@ let setAllArchiveStatus = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
-            yield noteService.setAllNotesArchiveStatus(req.body.archiveStatus);
-            res.status(204).send();
+            if (typeof (req.body.archiveStatus) != "boolean") {
+                res.status(400).send(JSON.stringify({ error: "Invalid request body." }));
+            }
+            else {
+                yield noteService.setAllNotesArchiveStatus(req.body.archiveStatus);
+                res.status(204).send();
+            }
         }
         catch (errors) {
             res.status(400).send(JSON.stringify({ errors }));
@@ -135,7 +150,7 @@ let showStats = function (req, res) {
             res.status(200).send(JSON.stringify(yield noteService.getCategoriesStats()));
         }
         catch (errors) {
-            res.status(400).send(JSON.stringify({ errors }));
+            res.status(500).send(JSON.stringify({ errors }));
         }
     });
 };

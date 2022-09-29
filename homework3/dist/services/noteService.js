@@ -77,10 +77,11 @@ let updateNote = function (id, data) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         try {
             let note = yield noteRpository.findOneById(id);
-            note.title = data.title;
-            note.content = data.content;
-            note.categoryId = data.categoryId;
-            yield validateNote(note);
+            let newNote = new Note_1.Note(data);
+            yield validateNote(newNote);
+            note.title = newNote.title;
+            note.categoryId = newNote.categoryId;
+            note.content = newNote.content;
             yield noteRpository.findAndUpdate(note);
             resolve();
         }
@@ -105,7 +106,6 @@ let setNoteArchiveStatus = function (id, archiveStatus) {
 };
 exports.setNoteArchiveStatus = setNoteArchiveStatus;
 let setAllNotesArchiveStatus = function (archiveStatus) {
-    console.log("service " + archiveStatus);
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         try {
             let notes = yield noteRpository.findAll();
@@ -113,7 +113,6 @@ let setAllNotesArchiveStatus = function (archiveStatus) {
                 note.archiveStatus = archiveStatus;
                 return note;
             });
-            console.log(notes);
             yield noteRpository.updateAll(notes);
             resolve();
         }
@@ -169,7 +168,12 @@ let validateNote = function (data) {
                     reject(errors);
                 }
             }).catch((error) => {
-                errors.push(error);
+                if (data.categoryId === -1) {
+                    errors.push("Category is required.");
+                }
+                else {
+                    errors.push(error);
+                }
                 reject(errors);
             });
         });

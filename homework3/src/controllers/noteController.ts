@@ -59,19 +59,31 @@ export let edit = async function(req: express.Request, res: express.Response) {
 
 export let setSingleArchiveStatus = async function(req: express.Request, res: express.Response) { 
   res.append('Content-Type', 'application/json')
-  try { 
-    await noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus)
-    res.status(204).send()
-  } catch (errors) {
-    res.status(400).send(JSON.stringify({errors}))
+  try {
+    if (typeof(req.body.archiveStatus) != "boolean") {
+      res.status(400).send(JSON.stringify({error: "Invalid request body."}))
+    } else {
+      await noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus)
+      res.status(204).send()
+    }
+  } catch (error) {
+    if (error === "404") {
+      res.status(404).send(JSON.stringify({message: "Note doesn't exist."}))
+    } else {
+      res.status(500).send(JSON.stringify({error: error}))
+    }
   }
 }
 
 export let setAllArchiveStatus = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json') 
-  try { 
-    await noteService.setAllNotesArchiveStatus(req.body.archiveStatus)
-    res.status(204).send()
+  try {
+    if (typeof(req.body.archiveStatus) != "boolean") {
+      res.status(400).send(JSON.stringify({error: "Invalid request body."}))
+    } else {
+      await noteService.setAllNotesArchiveStatus(req.body.archiveStatus)
+      res.status(204).send()
+    }
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }
@@ -96,7 +108,7 @@ export let showStats = async function(req: express.Request, res: express.Respons
   try { 
     res.status(200).send(JSON.stringify(await noteService.getCategoriesStats()))
   } catch (errors) {
-    res.status(400).send(JSON.stringify({ errors }))
+    res.status(500).send(JSON.stringify({ errors }))
   }
 }
 

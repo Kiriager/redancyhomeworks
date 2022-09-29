@@ -25,24 +25,23 @@ export class Note {
     this.content = this.content.trim()
   }
 
-  extractFormData(data: any):NoteFormData {
+  private extractFormData(data: any):NoteFormData {
     let formData = {
       title: "",
       content: "",
       categoryId: -1
     }
-    if (typeof (data.title) == "string") {
+    if (typeof(data.title) == "string") {
       formData.title = data.title
     }
-    if (typeof (data.content) == "string") {
+    if (typeof(data.content) == "string") {
       formData.content = data.content
     }
-    if (typeof (data.categoryId) == "number") {
+    if (typeof(data.categoryId) == "number") {
       formData.categoryId = data.categoryId
     }
     return formData
   } 
-
 }
 
 export interface NoteFormData {
