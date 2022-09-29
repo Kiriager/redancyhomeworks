@@ -1,6 +1,3 @@
-import noteRpository = require("../repositories/NoteRepository")
-import Category = require("./Category")
-
 export class Note {
   id: number
   title: string

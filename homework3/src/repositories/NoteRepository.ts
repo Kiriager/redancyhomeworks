@@ -74,8 +74,6 @@ class NoteRepository {
   }
 
   updateAll(notes: NoteData[]): Promise<void> {
-    console.log(notes);
-    
     return new Promise((resolve, reject) => {
       db.notesCollection = notes
       resolve()
