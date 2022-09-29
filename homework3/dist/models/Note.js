@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Note = void 0;
 class Note {
-    constructor(data) {
+    constructor(formData) {
+        let data = this.extractFormData(formData);
         this.id = -1;
         this.title = data.title;
         this.createDate = new Date();
@@ -11,47 +12,26 @@ class Note {
         this.categoryId = data.categoryId;
         this.cleanUp();
     }
-    // create() {
-    //   return new Promise<void>((resolve, reject) => {
-    //     this.cleanUp()
-    //     this.validate()
-    //     if (!this.errors.length) {
-    //       resolve()
-    //       // noteRpository.insertOne(this.data).then(() => {
-    //       //   resolve()
-    //       // }).catch(() => {
-    //       //   this.errors.push("please try again later")
-    //       //   reject(this.errors)
-    //       // })
-    //     } else {
-    //       reject(this.errors)
-    //     }
-    //   })
-    // }
     cleanUp() {
         this.title = this.title.trim();
         this.content = this.content.trim();
     }
-    validate() {
-        let errors = [];
-        if (this.title === "") {
-            errors.push("Note title is required.");
+    extractFormData(data) {
+        let formData = {
+            title: "",
+            content: "",
+            categoryId: -1
+        };
+        if (typeof (data.title) == "string") {
+            formData.title = data.title;
         }
-        // if (note.category.categoryName === "") {
-        //   errors.push("Note category is required.")
-        // }
-        // let category = categories.find((category) => {
-        //   return note.category.categoryName === category.categoryName
-        // })
-        // if (!category) {
-        //   errors.push("Category has to be one of the list.")
-        // } else {
-        //   note.category = category
-        // }
-        if (this.content === "") {
-            errors.push("Note content is required.");
+        if (typeof (data.content) == "string") {
+            formData.content = data.content;
         }
-        return errors;
+        if (typeof (data.categoryId) == "number") {
+            formData.categoryId = data.categoryId;
+        }
+        return formData;
     }
 }
 exports.Note = Note;

@@ -1,9 +1,9 @@
 import { db } from "../db"
-import { Category } from "../models/Category"
-import { Note, NoteData } from "../models/Note"
+import { NoteData } from "../models/Note"
 
 class NoteRepository {
   constructor() { }
+
   findAll(): Promise<NoteData[]> {
     return new Promise((resolve, reject) => {
       resolve(db.notesCollection)
@@ -39,9 +39,10 @@ class NoteRepository {
 
   deleteAllByStatus(archiveStatus: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
-      db.notesCollection = db.notesCollection.filter((n) => {
+      let newList = db.notesCollection.filter((n) => {
         return n.archiveStatus != archiveStatus
       })
+      db.notesCollection = newList
       resolve()
     })
   }
@@ -69,6 +70,8 @@ class NoteRepository {
   }
 
   updateAll(notes: NoteData[]): Promise<void> {
+    console.log(notes);
+    
     return new Promise((resolve, reject) => {
       db.notesCollection = notes
       resolve()

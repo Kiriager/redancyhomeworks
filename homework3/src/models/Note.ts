@@ -9,7 +9,8 @@ export class Note {
   archiveStatus: boolean
   categoryId: number
 
-  constructor(data: NoteFormData) {
+  constructor(formData: any) {
+    let data = this.extractFormData(formData)
     this.id = -1
     this.title = data.title
     this.createDate = new Date()
@@ -23,6 +24,24 @@ export class Note {
     this.title = this.title.trim()
     this.content = this.content.trim()
   }
+
+  extractFormData(data: any):NoteFormData {
+    let formData = {
+      title: "",
+      content: "",
+      categoryId: -1
+    }
+    if (typeof (data.title) == "string") {
+      formData.title = data.title
+    }
+    if (typeof (data.content) == "string") {
+      formData.content = data.content
+    }
+    if (typeof (data.categoryId) == "number") {
+      formData.categoryId = data.categoryId
+    }
+    return formData
+  } 
 
 }
 

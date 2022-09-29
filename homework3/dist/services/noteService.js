@@ -9,12 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addNote = exports.deleteNote = exports.getNote = exports.getAllNotes = void 0;
+exports.getCategoriesStats = exports.deleteAllNotesWithStatus = exports.setAllNotesArchiveStatus = exports.setNoteArchiveStatus = exports.updateNote = exports.addNote = exports.deleteNote = exports.getNote = exports.getAllNotes = void 0;
 const mapper_1 = require("../helpers/mapper");
 const Note_1 = require("../models/Note");
 const noteRpository = require("../repositories/NoteRepository");
 const categoryRpository = require("../repositories/CategoryRepository");
-//const Note = require("../models/Note")
 let getAllNotes = function () {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         try {
@@ -63,8 +62,8 @@ let deleteNote = function (id) {
 exports.deleteNote = deleteNote;
 let addNote = function (data) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-        let note = new Note_1.Note(data);
         try {
+            let note = new Note_1.Note(data);
             yield validateNote(note);
             resolve(yield noteRpository.insertOne(note));
         }
@@ -74,6 +73,84 @@ let addNote = function (data) {
     }));
 };
 exports.addNote = addNote;
+let updateNote = function (id, data) {
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let note = yield noteRpository.findOneById(id);
+            note.title = data.title;
+            note.content = data.content;
+            note.categoryId = data.categoryId;
+            yield validateNote(note);
+            yield noteRpository.findAndUpdate(note);
+            resolve();
+        }
+        catch (error) {
+            reject(error);
+        }
+    }));
+};
+exports.updateNote = updateNote;
+let setNoteArchiveStatus = function (id, archiveStatus) {
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let note = yield noteRpository.findOneById(id);
+            note.archiveStatus = archiveStatus;
+            yield noteRpository.findAndUpdate(note);
+            resolve();
+        }
+        catch (error) {
+            reject(error);
+        }
+    }));
+};
+exports.setNoteArchiveStatus = setNoteArchiveStatus;
+let setAllNotesArchiveStatus = function (archiveStatus) {
+    console.log("service " + archiveStatus);
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let notes = yield noteRpository.findAll();
+            notes = notes.map((note) => {
+                note.archiveStatus = archiveStatus;
+                return note;
+            });
+            console.log(notes);
+            yield noteRpository.updateAll(notes);
+            resolve();
+        }
+        catch (error) {
+            reject(error);
+        }
+    }));
+};
+exports.setAllNotesArchiveStatus = setAllNotesArchiveStatus;
+let deleteAllNotesWithStatus = function (archiveStatus) {
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield noteRpository.deleteAllByStatus(archiveStatus);
+            resolve();
+        }
+        catch (error) {
+            reject(error);
+        }
+    }));
+};
+exports.deleteAllNotesWithStatus = deleteAllNotesWithStatus;
+let getCategoriesStats = function () {
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let categories = yield categoryRpository.findAll();
+            let notes = yield noteRpository.findAll();
+            let stats = categories.map((c) => {
+                return getCategoryStats(notes, c);
+            });
+            resolve(stats);
+        }
+        catch (error) {
+            reject(error);
+        }
+    }));
+};
+exports.getCategoriesStats = getCategoriesStats;
 let validateNote = function (data) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
@@ -84,45 +161,32 @@ let validateNote = function (data) {
             if (data.content === "") {
                 errors.push("Note content is required.");
             }
-            categoryRpository.findOneById(data.categoryId).then().catch((error) => {
+            categoryRpository.findOneById(data.categoryId).then(() => {
+                if (!errors.length) {
+                    resolve();
+                }
+                else {
+                    reject(errors);
+                }
+            }).catch((error) => {
                 errors.push(error);
-            });
-            if (!errors.length) {
-                resolve();
-            }
-            else {
                 reject(errors);
-            }
+            });
         });
     });
 };
-// function toDto(note: Note):NoteDto {
-//   let category = Category.findAll()
-//   return {
-//     id: note.data.id,
-//     title: note.data.title,
-//     createDate: note.data.createDate,
-//     archiveStatus: note.data.archiveStatus,
-//     content: note.data.content,
-//     category: category
-//   }
-// }
-// try {
-//   let note = await Note.showSingleNote(parseInt(req.params.id))
-//   let category = await Category.findOneById(5)
-//   //let category = await Category.findOneById(note.categoryId)
-//   // let dtos = notes.map((note) => {
-//   //   let category = categories[note.categoryId + 1]
-//   //   return toDto(note, category)
-//   // })
-//   res.append('Content-Type', 'application/json')
-//   res.status(200).send(JSON.stringify({ note: toDto(note, category) }))
-// } catch (error) {
-//   res.append('Content-Type', 'application/json')
-//   if (error === "404") {
-//     res.status(404).send(JSON.stringify({ message: "Note doesn't exist." }))
-//   } else {
-//     res.status(500).send(JSON.stringify({ error: error }))
-//   }
-// }
+function getCategoryStats(notes, category) {
+    let categoryStats = { category: category, active: 0, archived: 0 };
+    notes.forEach(note => {
+        if (note.categoryId === category.id) {
+            if (note.archiveStatus) {
+                categoryStats.archived++;
+            }
+            else {
+                categoryStats.active++;
+            }
+        }
+    });
+    return categoryStats;
+}
 //# sourceMappingURL=noteService.js.map

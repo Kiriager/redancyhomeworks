@@ -1,10 +1,7 @@
 import express = require('express')
-import Category = require('../models/Category')
-import { toDto } from '../helpers/mapper';
-import { Note } from '../models/Note';
 import noteService = require('../services/noteService')
 
-export let showAllNotes = async function(req: express.Request, res:express.Response) {
+export let showAll = async function(req: express.Request, res:express.Response) {
   res.append('Content-Type', 'application/json')
   try {
     res.status(200).send(JSON.stringify({notes: await noteService.getAllNotes()}))
@@ -13,7 +10,7 @@ export let showAllNotes = async function(req: express.Request, res:express.Respo
   }
 }
 
-export let showSingleNote = async function(req: express.Request, res: express.Response) {
+export let showSingle = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
   try {
     res.status(200).send(JSON.stringify({note: await noteService.getNote(parseInt(req.params.id))}))
@@ -26,7 +23,7 @@ export let showSingleNote = async function(req: express.Request, res: express.Re
   }
 }
 
-export let deleteSingleNote = async function(req: express.Request, res: express.Response) {
+export let deleteSingle = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
   try {
     await noteService.deleteNote(parseInt(req.params.id))
@@ -40,17 +37,17 @@ export let deleteSingleNote = async function(req: express.Request, res: express.
   }
 }
 
-export let createNote = async function(req: express.Request, res: express.Response) {
+export let create = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
   try { 
     res.location("/notes/:" + await noteService.addNote(req.body))
-    res.status(201).send("Note has been created.")
+    res.status(201).send(JSON.stringify({message: "Note has been created."}))
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }
 }
 
-export let editNote = async function(req: express.Request, res: express.Response) {
+export let edit = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
   try { 
     await noteService.updateNote(parseInt(req.params.id), req.body)
@@ -60,30 +57,30 @@ export let editNote = async function(req: express.Request, res: express.Response
   }
 }
 
-export let setSingleNoteArchiveStatus = async function(req: express.Request, res: express.Response) {
+export let setSingleArchiveStatus = async function(req: express.Request, res: express.Response) { 
   res.append('Content-Type', 'application/json')
   try { 
-    await noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body)
+    await noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus)
     res.status(204).send()
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }
 }
 
-export let setAllNotesArchiveStatus = async function(req: express.Request, res: express.Response) {
-  res.append('Content-Type', 'application/json')
+export let setAllArchiveStatus = async function(req: express.Request, res: express.Response) {
+  res.append('Content-Type', 'application/json') 
   try { 
-    await noteService.setAllNotesArchiveStatus(req.body)
+    await noteService.setAllNotesArchiveStatus(req.body.archiveStatus)
     res.status(204).send()
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }
 }
 
-export let deleteAllNotes = async function(req: express.Request, res: express.Response) {
+export let deleteAllInTable = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
   try { 
-    await noteService.deleteAllNotesWithStatus(req.body)
+    await noteService.deleteAllNotesWithStatus(req.body.archiveStatus)
     res.status(204).send()
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
@@ -95,7 +92,7 @@ export let showStats = async function(req: express.Request, res: express.Respons
   try { 
     res.status(200).send(JSON.stringify(await noteService.getCategoriesStats()))
   } catch (errors) {
-    res.status(400).send(JSON.stringify({errors}))
+    res.status(400).send(JSON.stringify({ errors }))
   }
 }
 

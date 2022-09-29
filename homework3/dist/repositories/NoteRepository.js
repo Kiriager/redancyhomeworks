@@ -34,11 +34,41 @@ class NoteRepository {
             }
         });
     }
+    deleteAllByStatus(archiveStatus) {
+        return new Promise((resolve, reject) => {
+            let newList = db_1.db.notesCollection.filter((n) => {
+                return n.archiveStatus != archiveStatus;
+            });
+            db_1.db.notesCollection = newList;
+            resolve();
+        });
+    }
     insertOne(data) {
         return new Promise((resolve, reject) => {
             data.id = db_1.db.idGenerator++;
             db_1.db.notesCollection.push(data);
             resolve(data.id);
+        });
+    }
+    findAndUpdate(data) {
+        return new Promise((resolve, reject) => {
+            let noteIndex = db_1.db.notesCollection.findIndex((note) => {
+                return note.id === data.id;
+            });
+            if (noteIndex >= 0) {
+                db_1.db.notesCollection[noteIndex] = data;
+                resolve();
+            }
+            else {
+                reject("404");
+            }
+        });
+    }
+    updateAll(notes) {
+        console.log(notes);
+        return new Promise((resolve, reject) => {
+            db_1.db.notesCollection = notes;
+            resolve();
         });
     }
 }

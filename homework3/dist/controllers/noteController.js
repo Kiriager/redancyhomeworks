@@ -9,10 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createNote = exports.deleteSingleNote = exports.showSingleNote = exports.showAllNotes = void 0;
+exports.showStats = exports.deleteAllInTable = exports.setAllArchiveStatus = exports.setSingleArchiveStatus = exports.edit = exports.create = exports.deleteSingle = exports.showSingle = exports.showAll = void 0;
 const noteService = require("../services/noteService");
-//const Note = require("../models/Note")
-let showAllNotes = function (req, res) {
+let showAll = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
@@ -23,8 +22,8 @@ let showAllNotes = function (req, res) {
         }
     });
 };
-exports.showAllNotes = showAllNotes;
-let showSingleNote = function (req, res) {
+exports.showAll = showAll;
+let showSingle = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
@@ -40,8 +39,8 @@ let showSingleNote = function (req, res) {
         }
     });
 };
-exports.showSingleNote = showSingleNote;
-let deleteSingleNote = function (req, res) {
+exports.showSingle = showSingle;
+let deleteSingle = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
@@ -58,19 +57,85 @@ let deleteSingleNote = function (req, res) {
         }
     });
 };
-exports.deleteSingleNote = deleteSingleNote;
-let createNote = function (req, res) {
+exports.deleteSingle = deleteSingle;
+let create = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
-            let noteId = yield noteService.addNote(req.body);
-            res.location("/notes/:" + noteId);
-            res.status(201).send("Note has been created.");
+            res.location("/notes/:" + (yield noteService.addNote(req.body)));
+            res.status(201).send(JSON.stringify({ message: "Note has been created." }));
         }
         catch (errors) {
             res.status(400).send(JSON.stringify({ errors }));
         }
     });
 };
-exports.createNote = createNote;
+exports.create = create;
+let edit = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("Hello from edit");
+        res.append('Content-Type', 'application/json');
+        try {
+            yield noteService.updateNote(parseInt(req.params.id), req.body);
+            res.status(204).send();
+        }
+        catch (errors) {
+            res.status(400).send(JSON.stringify({ errors }));
+        }
+    });
+};
+exports.edit = edit;
+let setSingleArchiveStatus = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("hello from single archive");
+        res.append('Content-Type', 'application/json');
+        try {
+            yield noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus);
+            res.status(204).send();
+        }
+        catch (errors) {
+            res.status(400).send(JSON.stringify({ errors }));
+        }
+    });
+};
+exports.setSingleArchiveStatus = setSingleArchiveStatus;
+let setAllArchiveStatus = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.append('Content-Type', 'application/json');
+        console.log(req.body.archiveStatus);
+        try {
+            yield noteService.setAllNotesArchiveStatus(req.body.archiveStatus);
+            res.status(204).send();
+        }
+        catch (errors) {
+            res.status(400).send(JSON.stringify({ errors }));
+        }
+    });
+};
+exports.setAllArchiveStatus = setAllArchiveStatus;
+let deleteAllInTable = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.append('Content-Type', 'application/json');
+        try {
+            yield noteService.deleteAllNotesWithStatus(req.body.archiveStatus);
+            res.status(204).send();
+        }
+        catch (errors) {
+            res.status(400).send(JSON.stringify({ errors }));
+        }
+    });
+};
+exports.deleteAllInTable = deleteAllInTable;
+let showStats = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.append('Content-Type', 'application/json');
+        try {
+            res.status(200).send(JSON.stringify(yield noteService.getCategoriesStats()));
+        }
+        catch (errors) {
+            res.status(400).send(JSON.stringify({ errors }));
+        }
+    });
+};
+exports.showStats = showStats;
 //# sourceMappingURL=noteController.js.map

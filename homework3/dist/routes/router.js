@@ -8,9 +8,14 @@ router.get('/', (req, res) => {
 // router.post('/notes', (req, res) => {
 //   res.json({message: res})
 // })
-router.post('/notes', noteController.createNote);
-router.get('/notes', noteController.showAllNotes);
-router.get('/notes/:id', noteController.showSingleNote);
-router.delete('/notes/:id', noteController.deleteSingleNote);
+router.post('/notes', noteController.create);
+router.get('/notes', noteController.showAll);
+router.get('/notes/stats', noteController.showStats);
+router.get('/notes/:id', noteController.showSingle);
+router.delete('/notes', noteController.deleteAllInTable);
+router.delete('/notes/:id', noteController.deleteSingle);
+router.patch('/notes/archive', noteController.setAllArchiveStatus);
+router.patch('/notes/archive/:id', noteController.setSingleArchiveStatus);
+router.patch('/notes/:id', noteController.edit);
 module.exports = router;
 //# sourceMappingURL=router.js.map

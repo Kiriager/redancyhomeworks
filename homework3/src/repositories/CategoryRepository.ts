@@ -20,16 +20,6 @@ class CategoryRepository {
     })
   }
 
-  // ifCategoryExists(id: number): Promise<boolean> {
-  //   return new Promise((resolve, reject) => {
-  //     let category = db.categoriesCollection.find((category) => {return category.id === id})
-  //     if (!category) {
-  //       reject("Category doesn't exist.")
-  //     } else {
-  //       resolve(true)
-  //     }
-  //   })
-  // }
 }
 
 export = new CategoryRepository()
