@@ -22,7 +22,7 @@ let getAllNotes = function () {
             let dtos = notes.map((note) => {
                 let category = categories.find((c) => { return c.id == note.categoryId; });
                 if (!category) {
-                    category = { id: 0, categoryName: "Uncategorized", categoryIcon: "" };
+                    category = { id: -1, categoryName: "Uncategorized", categoryIcon: "" };
                 }
                 return (0, mapper_1.toDto)(note, category);
             });

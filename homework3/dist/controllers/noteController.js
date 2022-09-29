@@ -73,7 +73,6 @@ let create = function (req, res) {
 exports.create = create;
 let edit = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Hello from edit");
         res.append('Content-Type', 'application/json');
         try {
             yield noteService.updateNote(parseInt(req.params.id), req.body);
@@ -87,7 +86,6 @@ let edit = function (req, res) {
 exports.edit = edit;
 let setSingleArchiveStatus = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("hello from single archive");
         res.append('Content-Type', 'application/json');
         try {
             yield noteService.setNoteArchiveStatus(parseInt(req.params.id), req.body.archiveStatus);
@@ -102,7 +100,6 @@ exports.setSingleArchiveStatus = setSingleArchiveStatus;
 let setAllArchiveStatus = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
-        console.log(req.body.archiveStatus);
         try {
             yield noteService.setAllNotesArchiveStatus(req.body.archiveStatus);
             res.status(204).send();
@@ -117,8 +114,13 @@ let deleteAllInTable = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         res.append('Content-Type', 'application/json');
         try {
-            yield noteService.deleteAllNotesWithStatus(req.body.archiveStatus);
-            res.status(204).send();
+            if (req.query.status != "true" && req.query.status != "false") {
+                res.status(400).send(JSON.stringify({ error: "Invalid guery." }));
+            }
+            else {
+                yield noteService.deleteAllNotesWithStatus(req.query.status === "true");
+                res.status(204).send();
+            }
         }
         catch (errors) {
             res.status(400).send(JSON.stringify({ errors }));

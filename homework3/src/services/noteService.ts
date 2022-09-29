@@ -25,7 +25,7 @@ export let getAllNotes = function (): Promise<NoteDto[]> {
   })
 }
 
-export let getNote = function (id: number): Promise<NoteDto> {
+export let getNote = function (id: number): Promise<NoteDto> { 
   return new Promise(async (resolve, reject) => {
     try {
       let note = await noteRpository.findOneById(id)
@@ -110,7 +110,7 @@ export let setAllNotesArchiveStatus = function (archiveStatus: boolean): Promise
   })
 }
 
-export let deleteAllNotesWithStatus = function(archiveStatus: boolean): Promise<void> {
+export let deleteAllNotesWithStatus = function(archiveStatus: boolean): Promise<void> { 
   return new Promise(async (resolve, reject) => {
     try {
       await noteRpository.deleteAllByStatus(archiveStatus)

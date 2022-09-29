@@ -79,9 +79,13 @@ export let setAllArchiveStatus = async function(req: express.Request, res: expre
 
 export let deleteAllInTable = async function(req: express.Request, res: express.Response) {
   res.append('Content-Type', 'application/json')
-  try { 
-    await noteService.deleteAllNotesWithStatus(req.body.archiveStatus)
-    res.status(204).send()
+  try {
+    if (req.query.status != "true" && req.query.status != "false") {
+      res.status(400).send(JSON.stringify({error: "Invalid guery."}))
+    } else {
+      await noteService.deleteAllNotesWithStatus(req.query.status === "true")
+      res.status(204).send()
+    }
   } catch (errors) {
     res.status(400).send(JSON.stringify({errors}))
   }

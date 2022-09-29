@@ -39,7 +39,12 @@ class NoteRepository {
             let newList = db_1.db.notesCollection.filter((n) => {
                 return n.archiveStatus != archiveStatus;
             });
-            db_1.db.notesCollection = newList;
+            if (!newList.length) {
+                db_1.db.notesCollection = new Array;
+            }
+            else {
+                db_1.db.notesCollection = newList;
+            }
             resolve();
         });
     }

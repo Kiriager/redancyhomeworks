@@ -37,12 +37,16 @@ class NoteRepository {
     })
   }
 
-  deleteAllByStatus(archiveStatus: boolean): Promise<void> {
+  deleteAllByStatus(archiveStatus: boolean): Promise<void> {    
     return new Promise((resolve, reject) => {
       let newList = db.notesCollection.filter((n) => {
         return n.archiveStatus != archiveStatus
       })
-      db.notesCollection = newList
+      if (!newList.length) {
+        db.notesCollection = new Array<NoteData>
+      } else {
+        db.notesCollection = newList
+      }     
       resolve()
     })
   }
