@@ -58,11 +58,12 @@ export function CreateNoteButton() {
 }
 
 export function TableArchiveStatusButton() {
+  const tableArchiveStatus = useAppSelector(state => state.notes.showArchiveNotes)
   const dispatch = useAppDispatch();
   return (
     <button id="swap-table-status" className="outside"
       onClick={() => dispatch(switchTableArchiveStatus())}>
-      Show Archived Notes
+      {tableArchiveStatus ? "Show active notes" : "Show archives notes"}
     </button>
   )
 }
