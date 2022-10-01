@@ -63,7 +63,7 @@ export function TableArchiveStatusButton() {
   return (
     <button id="swap-table-status" className="outside"
       onClick={() => dispatch(switchTableArchiveStatus())}>
-      {tableArchiveStatus ? "Show active notes" : "Show archives notes"}
+      {tableArchiveStatus ? "Show active notes" : "Show archived notes"}
     </button>
   )
 }
