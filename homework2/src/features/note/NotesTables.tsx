@@ -16,7 +16,7 @@ export function NotesTable() {
   return (
     <table className="border-spacing-0 mt-14 w-full">
       <thead>
-        <tr className="text-white bg-gray-800">
+        <tr className="text-white bg-gray-800 h-[70px]">
           <Cell heading={true} content="" />
           <Cell heading={true} content="Name" />
           <Cell heading={true} content="Created" />
@@ -50,14 +50,9 @@ function NoteRows() {
   )
 }
 
-// if (note.editStatus) {
-//   return (<Form note={note} key={"note" + note.id} />)
-// } else {
-//   return (<SingleNote {...note} key={"note" + note.id} />)
-// }
 function SingleNote(note: Note) {
   return (
-    <tr className="bg-neutral-300 border-y-[10px] border-white">
+    <tr className="bg-neutral-300 border-y-[10px] border-white h-[70px]">
       <CategoryIcon {...note.category} />
       <Cell heading={false} content={note.name} />
       <Cell heading={false} content={noteService.printMyDate(note.createDate)} />
@@ -88,7 +83,7 @@ function Form(props: FormProps) {
   const [content, setContent] = useState(props.note ? props.note.content : "")
 
   return (
-    <tr className="bg-neutral-300 border-y-[10px] border-white">
+    <tr className="bg-neutral-300 border-y-[10px] border-white h-[70px]">
       {props.note === undefined
         ? <Cell heading={false} content="" />
         : <CategoryIcon {...props.note.category} />}
@@ -120,7 +115,7 @@ interface CategorySelectProps {
 
 function CategorySelect(props: CategorySelectProps) {
   return (
-    <td className="p-[8px] h-[40px]">
+    <td className="p-[8px] h-[60px]">
       <select name="category" value={props.value}
         className="h-[100%] w-[100%] border-2 border-white focus:border-neutral-500 transition duration-1000 outline-0"
         onChange={props.callback}>
@@ -138,7 +133,7 @@ interface InputProps {
 
 function NoteFormInput(props: InputProps) {
   return (
-    <td className="p-[8px] h-[40px]">
+    <td className="p-[8px] h-[60px]">
       <input type="text" name={props.name} autoComplete="off"
         value={props.value}
         className="h-[100%] w-[100%] border-2 border-white focus:border-neutral-500 transition duration-1000 outline-0"
@@ -155,7 +150,7 @@ interface SubmitFormButtonProps {
 function SubmitFormButton(props: SubmitFormButtonProps) {
   const dispatch = useAppDispatch()
   return (
-    <td className="p-[8px] h-[40px]">
+    <td className="p-[8px]">
       <button title="Save Note" onClick={() => {
         return props.noteId
           ? dispatch(edit({ data: props.data, noteId: props.noteId }))
@@ -174,7 +169,7 @@ interface DiscardFormButtonProps {
 function DiscardFormButton(props: DiscardFormButtonProps) {
   const dispatch = useAppDispatch()
   return (
-    <td className="p-[8px] h-[40px]">
+    <td className="p-[8px]">
       <button title="Discard" onClick={() => {
         return props.noteId ? dispatch(discardEditForm(props.noteId)) : dispatch(hideCreateForm())
       }}>
@@ -190,7 +185,7 @@ export function StatsTable() {
 
   return (
     <table className="border-spacing-0 mt-14 w-full">
-      <thead><tr className="text-white bg-gray-800">
+      <thead><tr className="text-white bg-gray-800 h-[70px]">
         <Cell heading={true} content="" />
         <Cell heading={true} content="Note Category" />
         <Cell heading={true} content="Active" />
@@ -208,7 +203,7 @@ export function StatsTable() {
 
 function CategoryStatsRow(categoryStats: CategoryStats) {
   return (
-    <tr className="bg-neutral-300 border-y-[10px] border-white">
+    <tr className="bg-neutral-300 border-y-[10px] border-white h-[70px]">
       <CategoryIcon {...categoryStats.category} />
       <Cell heading={false} content={categoryStats.category.categoryName} />
       <Cell heading={false} content={categoryStats.active.toString()} />
@@ -219,7 +214,7 @@ function CategoryStatsRow(categoryStats: CategoryStats) {
 
 function CategoryIcon(category: Category) {
   return (
-    <td className="p-[8px] h-[40px]">
+    <td className="p-[8px]">
       <div className="text-xl text-neutral-200 bg-neutral-900 w-[36px] h-[36px] flex rounded-full">
         <i className={category.categoryIcon + " m-auto"}></i>
       </div>
@@ -245,8 +240,8 @@ interface CellProps {
 
 function Cell(props: CellProps) {
   return (
-    props.heading ? <th className="p-[8px] h-[40px] text-start">{props.content}</th> :
-      <td className="p-[8px] h-[40px]">{props.content}</td>
+    props.heading ? <th className="p-[8px] text-start box-border">{props.content}</th> :
+      <td className="p-[8px] box-border">{props.content}</td>
   )
 }
 
@@ -273,7 +268,7 @@ interface ButtonProps {
 function NoteButton(props: ButtonProps) {
   const dispatch = useAppDispatch()
   return (
-    <td className="p-[8px] h-[40px]">
+    <td className="p-[8px]">
       <button title={props.title}
         onClick={() => dispatch(props.action(props.noteId))}>
         <ButtonIcon iconTitle={props.icon} light={false} />
@@ -292,7 +287,7 @@ interface HeadButtonProps {
 function HeadButton(props: HeadButtonProps) {
   const dispatch = useAppDispatch()
   return (
-    <th className="p-[8px] h-[40px]">
+    <th className="p-[8px]">
       <button title={props.title}
         onClick={() => dispatch(props.action(props.status))}>
         <ButtonIcon iconTitle={props.icon} light={true} />

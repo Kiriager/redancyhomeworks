@@ -36,7 +36,7 @@ function parseDateToMyDate(date: Date):MyDate {
 }
 
 function printMyDate(date: MyDate):string {
-  return date.date + "/" + date.month + "/" + date.year
+  return date.date + "/" + (date.month + 1)  + "/" + date.year
 }
 
 function extractDates(note: Note): string {
