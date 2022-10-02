@@ -22,6 +22,8 @@ const noteSlice = createSlice({
   initialState,
   reducers: {
     add: (state, action: PayloadAction<NoteFormData>) => {
+      console.log("Hello from add");
+      
       state.showCreateForm = false
       let formData = noteService.cleanUpFormData(action.payload)
       let note = noteService.createNote(formData, state.ids)
@@ -34,6 +36,7 @@ const noteSlice = createSlice({
       }
     },
     edit: (state, action: PayloadAction<{data: NoteFormData, noteId: number}>) => {
+      console.log("Hello from edit");
       let note = state.notesList.find((note) => { return note.id === action.payload.noteId })
       if (typeof (note) != 'undefined') {
         note.editStatus = false
@@ -87,12 +90,12 @@ const noteSlice = createSlice({
     setAllNotesArchiveStatus: (state, action: PayloadAction<boolean>) => {
       state.notesList.forEach((note) => {
         note.editStatus = false
-        note.archivedStatus = action.payload
+        note.archivedStatus = !action.payload
       })
     },
-    removeAll: (state) => {
+    removeAll: (state, action: PayloadAction<boolean>) => {
       for (let i = 0; i < state.notesList.length; i++) {
-        if (state.notesList[i].archivedStatus === state.showArchiveNotes) {
+        if (state.notesList[i].archivedStatus === action.payload) {
           state.notesList.splice(i, 1)
           i--
         } 

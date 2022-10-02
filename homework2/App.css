@@ -1,24 +1,24 @@
-.App-header {
+/* .App-header {
   margin: 5%;
-}
+} */
 
-table {
+/* table {
   border-spacing: 0px;
   width: 100%;
   margin-top: 50px;
-}
+} */
 
-th, td {
+/* th, td {
   padding: 10px;
   border-bottom: 5px solid white;
   border-top: 5px solid white;
   text-align: start;
   height: 35px;
-}
+} */
 
-td {
+/* td {
   background-color: #E8EAF5;
-}
+} */
 
 th {
   color:white;
@@ -27,28 +27,28 @@ th {
 
 /*icon buttons*/
 
-button > i {
+/* button > i {
   pointer-events: none;
   font-size: 20px;
-}
+} */
 
-td button > i {
+/* td button > i {
   color:#303030;
-}
+} */
 
-td button:hover > i {
+/* td button:hover > i {
   color:#7a7a7a;
-}
+} */
 
-th button > i {
+/* th button > i {
   color:white;
 }
 
 th button:hover > i {
   color:#d8d8d8;
-}
+} */
 
-th button {
+/* th button {
   border: none;
   background-color: gray;
 }
@@ -56,32 +56,31 @@ th button {
 td button {
   border: none;
   background-color: #E8EAF5;
-}
+} */
 
-button.outside {
+/* button.outside {
   border: none;
   background-color: gray;
   height: 35px;
   color: white;
-  /* margin: 15px 0px; */
   width: 100%;
-}
+} */
 
 button.outside:hover {
   text-shadow: #303030 2px 2px 2px;
 }
 
-#create-button-container {
+/* #create-button-container {
   background-color: white;
   padding-left: 0px;
   padding-right: 0px;
-}
+} */
 
-#swap-table-status {
+/* #swap-table-status {
   margin: 20px 0px;
-}
+} */
 
-input[type=text], select {
+/* input[type=text], select {
   box-sizing: border-box;
   height: 100%;
   border: 3px solid white;
@@ -93,10 +92,10 @@ input[type=text], select {
 
 input[type=text]:focus, select:focus {
   border:3px solid #555;
-}
+} */
 
 /*task icons container*/
-.task-icon-container {
+/* .task-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,4 +105,4 @@ input[type=text]:focus, select:focus {
   width: 36px;
   height: 36px;
   border-radius: 18px;
-}
+} */

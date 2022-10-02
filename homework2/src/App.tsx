@@ -1,14 +1,12 @@
 import { NotesTable, StatsTable, TableArchiveStatusButton } from './features/note/NotesTables';
-import './App.css';
+// import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <NotesTable />
-        <StatsTable />
-        <TableArchiveStatusButton />
-      </header>
+    <div className="App m-[5%]">
+      <NotesTable />
+      <StatsTable />
+      <TableArchiveStatusButton />
     </div>
   );
 }
