@@ -1,5 +1,4 @@
 import { NotesTable, StatsTable, TableArchiveStatusButton } from './features/note/NotesTables';
-// import './App.css';
 
 function App() {
   return (
