@@ -70,7 +70,6 @@ class NoteRepository {
         });
     }
     updateAll(notes) {
-        console.log(notes);
         return new Promise((resolve, reject) => {
             db_1.db.notesCollection = notes;
             resolve();
